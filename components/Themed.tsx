@@ -1,45 +1,59 @@
-/**
- * Learn more about Light and Dark modes:
- * https://docs.expo.io/guides/color-schemes/
- */
+import {
+  SegmentedControl as DefaultSegmentedControl,
+  View,
+  ViewProps,
+} from "react-native-ui-lib";
+import { Calendar as DefaultCalendar } from "react-native-calendars";
+import useColors from "../hooks/useColors";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-import { Text as DefaultText, View as DefaultView } from 'react-native';
+export function SegmentedControl(props: any) {
+  const COLORS = useColors();
+  const themedProps = {
+    backgroundColor: COLORS.container,
+    activeBackgroundColor: COLORS.active,
+    activeColor: COLORS.text,
+    outlineColor: COLORS.container,
+    style: { borderColor: COLORS.container },
+    ...props,
+  };
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme();
-  const colorFromProps = props[theme];
-
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
+  return <DefaultSegmentedControl {...themedProps} />;
 }
 
-type ThemeProps = {
-  lightColor?: string;
-  darkColor?: string;
-};
+export function Background(props: ViewProps) {
+  const COLORS = useColors();
+  const themedProps = {
+    backgroundColor: COLORS.background,
+    ...props,
+  };
 
-export type TextProps = ThemeProps & DefaultText['props'];
-export type ViewProps = ThemeProps & DefaultView['props'];
-
-export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
+  return <View {...themedProps} />;
 }
 
-export function View(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+export function Calendar(props: any) {
+  const COLORS = useColors();
+  const themedProps = {
+    theme: {
+      calendarBackground: COLORS.background,
+      textSectionTitleColor: COLORS.textSecondary,
+      textSectionTitleDisabledColor: COLORS.disabled,
+      selectedDayBackgroundColor: COLORS.active,
+      selectedDayTextColor: COLORS.text,
+      todayTextColor: COLORS.active,
+      dayTextColor: COLORS.textSecondary,
+      textDisabledColor: COLORS.disabled,
+      arrowColor: COLORS.inactive,
+      monthTextColor: COLORS.text,
+      textDayFontWeight: "300",
+      textMonthFontWeight: "bold",
+      textDayHeaderFontWeight: "300",
+      textDayFontSize: 16,
+      textMonthFontSize: 16,
+      textDayHeaderFontSize: 16,
+    },
+    ...props,
+  };
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return <DefaultCalendar {...themedProps} />;
 }
