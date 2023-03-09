@@ -5,7 +5,7 @@ import Layout from "../constants/Layout";
 import { LoggedExercise, LoggedSet } from "../models/Log";
 import { Chip, Drawer, GridList, GridView, Text } from "react-native-ui-lib";
 import MuscleChip from "./MuscleChip";
-import { Measurements, MuscleOptions } from "../models/Exercise";
+import { Measurement, MuscleOptions } from "../models/Exercise";
 // import { Col, Grid, Row } from "./Grid";
 import Grid from "./Table";
 import Table from "./Table";
@@ -53,7 +53,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
   };
 
   const columns = Object.keys(log.sets[0]).map((measurement) => {
-    const measurementDef = measurementMap.get(measurement as Measurements);
+    const measurementDef = measurementMap.get(measurement as Measurement);
 
     return {
       field: measurement,

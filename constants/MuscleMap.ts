@@ -1,5 +1,11 @@
-import { muscleGroupColors } from "./Colors";
-import { Muscle, MuscleGroup, MuscleOptions } from "../models/Exercise";
+import { exerciseTypeColors, muscleGroupColors } from "./Colors";
+import {
+  Equipment,
+  Measurement,
+  Muscle,
+  MuscleGroup,
+  MuscleOptions,
+} from "../models/Exercise";
 
 type MuscleGroupDef = {
   displayName: string;
@@ -63,6 +69,14 @@ export const muscleGroupMap = new Map<MuscleOptions, MuscleGroupDef>([
         "knees",
         "ankles",
       ],
+    },
+  ],
+  [
+    "neck",
+    {
+      displayName: "Neck",
+      color: muscleGroupColors.neck,
+      muscles: [],
     },
   ],
   [
@@ -233,6 +247,95 @@ export const muscleMap = new Map<MuscleOptions, MuscleDef>([
     {
       displayName: "Ankles",
       muscleGroup: "legs",
+    },
+  ],
+]);
+
+type ExerciseTypeDef = {
+  displayName: string;
+  color: string;
+  defaultMeasurements: Measurement[];
+};
+
+export const exerciseTypeMap = new Map<Equipment, ExerciseTypeDef>([
+  [
+    "barbell",
+    {
+      displayName: "Barbell",
+      color: exerciseTypeColors.barbell,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "dumbbell",
+    {
+      displayName: "Dumbbell",
+      color: exerciseTypeColors.dumbbell,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "ezBar",
+    {
+      displayName: "EZ Bar",
+      color: exerciseTypeColors.ezBar,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "bodyWeight",
+    {
+      displayName: "Body Weight",
+      color: exerciseTypeColors.bodyWeight,
+      defaultMeasurements: [],
+    },
+  ],
+  [
+    "banded",
+    {
+      displayName: "Banded",
+      color: exerciseTypeColors.banded,
+      defaultMeasurements: ["reps"],
+    },
+  ],
+  [
+    "kettlebell",
+    {
+      displayName: "Kettlebell",
+      color: exerciseTypeColors.kettlebell,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "machine",
+    {
+      displayName: "Machine",
+      color: exerciseTypeColors.machine,
+      defaultMeasurements: ["reps"],
+    },
+  ],
+  [
+    "weightPlate",
+    {
+      displayName: "Weight Plate",
+      color: exerciseTypeColors.weightPlate,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "medicineBall",
+    {
+      displayName: "Medicine Ball",
+      color: exerciseTypeColors.medicineBall,
+      defaultMeasurements: ["weight", "reps"],
+    },
+  ],
+  [
+    "other",
+    {
+      displayName: "Other",
+      color: exerciseTypeColors.other,
+      defaultMeasurements: [],
     },
   ],
 ]);

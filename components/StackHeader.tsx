@@ -36,6 +36,8 @@ export default function StackHeader(props: any) {
   return (
     <View
       style={{
+        borderBottomColor: COLORS.background,
+        borderBottomWidth: 2,
         backgroundColor: COLORS.container,
         height: 100,
         alignItems: "center",

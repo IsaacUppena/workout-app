@@ -56,6 +56,7 @@ export const muscleGroupColors = {
   core: data.yellow,
   legs: data.violet,
   shoulders: data.blue,
+  neck: data.indigo,
 };
 
 export const measurementColors = {
@@ -64,4 +65,17 @@ export const measurementColors = {
   calories: data.yellow,
   time: data.orange,
   rpe: data.blue,
+};
+
+export const exerciseTypeColors = {
+  barbell: data.red,
+  dumbbell: data.orange,
+  bodyWeight: data.yellow,
+  banded: data.green,
+  ezBar: data.blue,
+  kettlebell: data.indigo,
+  machine: data.violet,
+  weightPlate: data.pink,
+  medicineBall: "#FFF",
+  other: "#000",
 };

@@ -1,4 +1,4 @@
-import { View, ViewStyle } from "react-native";
+import { Pressable, TextStyle, View, ViewStyle } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Text } from "react-native-ui-lib";
 
@@ -6,28 +6,43 @@ type ChipProps = {
   color: string;
   backgroundColor: string;
   title: string;
+  size?: "small" | "medium" | "large";
+  style?: ViewStyle;
   outlined?: boolean;
   leftIcon?: string;
   rightIcon?: string;
 };
 
 export default function Chip(props: ChipProps) {
-  const { color, backgroundColor, title, outlined, leftIcon, rightIcon } =
-    props;
+  const {
+    color,
+    backgroundColor,
+    title,
+    size,
+    style,
+    outlined,
+    leftIcon,
+    rightIcon,
+  } = props;
 
   const chipStyles: ViewStyle = {
     backgroundColor: outlined ? backgroundColor : color,
     borderColor: outlined ? color : backgroundColor,
     borderRadius: 10,
     borderWidth: outlined ? 2 : 0,
-    height: 26,
+    height: size === "large" ? 36 : size === "medium" ? 30 : 26,
     alignItems: "center",
     paddingHorizontal: 5,
     flexDirection: "row",
   };
 
+  const textStyle: TextStyle = {
+    fontSize: size === "large" ? 18 : size === "medium" ? 14 : 12,
+    fontWeight: "bold",
+  };
+
   return (
-    <View style={chipStyles}>
+    <View style={{ ...chipStyles, ...style }}>
       {leftIcon ? (
         <FontAwesome5
           name={leftIcon}
@@ -36,7 +51,11 @@ export default function Chip(props: ChipProps) {
       ) : (
         ""
       )}
-      <Text text90BO marginH-5 color={outlined ? color : backgroundColor}>
+      <Text
+        style={textStyle}
+        marginH-5
+        color={outlined ? color : backgroundColor}
+      >
         {title}
       </Text>
       {rightIcon ? (
