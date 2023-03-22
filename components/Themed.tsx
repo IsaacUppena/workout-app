@@ -6,6 +6,7 @@ import {
 import { Calendar as DefaultCalendar } from "react-native-calendars";
 import useColors from "../hooks/useColors";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { StatusBar } from "react-native";
 
 export function SegmentedControl(props: any) {
   const COLORS = useColors();

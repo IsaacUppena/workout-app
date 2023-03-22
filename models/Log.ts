@@ -5,7 +5,9 @@ export type LoggedSet = {
   weight?: number;
   calories?: number;
   time?: number;
+  distance?: number;
   rpe?: number;
+  [key: string]: any;
 };
 
 export type LoggedExercise = {

@@ -1,28 +1,3 @@
-// export type Muscle =
-//   | "abs"
-//   | "obliques"
-//   | "biceps"
-//   | "forearms"
-//   | "frontDelts"
-//   | "midDelts"
-//   | "rearDelts"
-//   | "wrists"
-//   | "triceps"
-//   | "traps"
-//   | "lats"
-//   | "lowerBack"
-//   | "scapular"
-//   | "pecs"
-//   | "serratus"
-//   | "quads"
-//   | "hamstrings"
-//   | "glutes"
-//   | "calves"
-//   | "hips"
-//   | "knees"
-//   | "ankles"
-//   | "neck";
-
 export const muscles = [
   "abs",
   "obliques",
@@ -62,7 +37,7 @@ export const muscleGroups = [
 export type MuscleGroup = typeof muscleGroups[number];
 export type MuscleOptions = Muscle | MuscleGroup;
 
-export const equipment = [
+export const resistanceTypes = [
   "barbell",
   "dumbbell",
   "bodyWeight",
@@ -74,24 +49,23 @@ export const equipment = [
   "medicineBall",
   "other",
 ] as const;
-export type Equipment = typeof equipment[number];
+export type ResistanceType = typeof resistanceTypes[number];
 
 export const measurements = [
   "weight",
   "calories",
   "time",
   "reps",
+  "distance",
   "rpe",
 ] as const;
 export type Measurement = typeof measurements[number];
-
-// export type Measurements = "reps" | "weight" | "calories" | "time" | "rpe";
 
 export type Exercise = {
   name: string;
   primaryMuscle: MuscleOptions;
   secondaryMuscles?: MuscleOptions[];
-  equipment?: Equipment[];
+  resistanceType: ResistanceType;
   measurements: Measurement[];
   instructions?: string[];
 };

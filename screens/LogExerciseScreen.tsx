@@ -1,5 +1,6 @@
 import {
   Button,
+  Fader,
   FloatingButton,
   Gradient,
   Icon,
@@ -31,7 +32,11 @@ import Layout from "../constants/Layout";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 
+import exampleWorkout from "../constants/ExampleWorkout";
+
 export default function LogExerciseScreen(props: any) {
+  const exampleExercises = exampleWorkout.exercises;
+
   const [searchInput, setSearchInput] = useState("");
 
   const day = props.route.params;
@@ -69,48 +74,6 @@ export default function LogExerciseScreen(props: any) {
     setShowDialog(false);
   };
 
-  const exampleExercises: LoggedExercise[] = [
-    {
-      exercise: {
-        name: "Bench Press",
-        primaryMuscle: "pecs",
-        secondaryMuscles: ["triceps", "frontDelts"],
-        measurements: ["weight", "reps"],
-      },
-      sets: [
-        { reps: 10, weight: 160 },
-        { reps: 10, weight: 170 },
-        { reps: 8, weight: 180 },
-      ],
-    },
-    {
-      exercise: {
-        name: "Barbell Squat",
-        primaryMuscle: "quads",
-        secondaryMuscles: ["hamstrings", "glutes"],
-        measurements: ["weight", "reps"],
-      },
-      sets: [
-        { reps: 10, weight: 160, rpe: 7.5 },
-        { reps: 10, weight: 170, rpe: 8.5 },
-        { reps: 8, weight: 180, rpe: 9.5 },
-      ],
-    },
-    {
-      exercise: {
-        name: "Dumbbell Clean and Jerk",
-        primaryMuscle: "traps",
-        secondaryMuscles: ["arms", "quads"],
-        measurements: ["weight", "reps"],
-      },
-      sets: [
-        { reps: 10, weight: 160 },
-        { reps: 10, weight: 170 },
-        { reps: 8, weight: 180 },
-      ],
-    },
-  ];
-
   // Replace FAB with a bottom gradient and button that says (Add exercise +), this transforms into a modal where exercise can be selected
 
   return (
@@ -134,7 +97,7 @@ export default function LogExerciseScreen(props: any) {
           backgroundColor: "#fff",
         }}
       > */}
-      {/* <View
+      <View
         style={{
           position: "absolute",
           bottom: 0,
@@ -145,8 +108,8 @@ export default function LogExerciseScreen(props: any) {
           justifyContent: "center",
           paddingTop: 20,
         }}
-      > */}
-      {/* <LinearGradient
+      >
+        {/* <LinearGradient
         colors={["transparent", "000"]}
         locations={[0, 0.6]}
         style={{
@@ -160,26 +123,26 @@ export default function LogExerciseScreen(props: any) {
           paddingTop: 20,
         }}
       > */}
-      <Pressable onPress={handleAddExercise}>
-        {/* <LinearGradient colors={["transparent", "rgba(1,1,0,0.8)"]}> */}
-        <View
-          style={{
-            flexDirection: "row",
-            padding: 10,
-            backgroundColor: COLORS.active,
-            width: 150,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 10,
-          }}
-        >
-          <Text text70BO marginR-5 color={COLORS.text}>
-            Add Exercise
-          </Text>
-          <FontAwesome5 name="plus" color={COLORS.text} />
-          {/* </LinearGradient> */}
-        </View>
-      </Pressable>
+
+        <Pressable onPress={handleAddExercise}>
+          <View
+            style={{
+              flexDirection: "row",
+              padding: 10,
+              backgroundColor: COLORS.active,
+              width: 150,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Text text70BO marginR-5 color={COLORS.text}>
+              Add Exercise
+            </Text>
+            <FontAwesome5 name="plus" color={COLORS.text} />
+          </View>
+        </Pressable>
+      </View>
       {/* </LinearGradient> */}
       <Incubator.Dialog
         width={"90%"}

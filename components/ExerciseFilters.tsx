@@ -6,11 +6,11 @@ import {
   muscles,
   MuscleGroup,
   Muscle,
-  Equipment,
-  equipment,
+  ResistanceType,
+  resistanceTypes,
 } from "../models/Exercise";
 import { useEffect, useState } from "react";
-import { GestureResponderEvent, Pressable } from "react-native";
+import { GestureResponderEvent, Pressable, ViewStyle } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import {
   exerciseTypeMap,
@@ -30,6 +30,7 @@ type ChipListInputProps = {
   displayNameMap: Map<string, string>;
   selectAll: boolean;
   openByDefault?: boolean;
+  containerStyles?: ViewStyle;
   handleOnPress: (pressedValue: string) => void;
   handleOnPressAll: () => void;
 };
@@ -46,65 +47,68 @@ function ChipListInput(props: ChipListInputProps) {
     displayNameMap,
     selectAll,
     openByDefault,
+    containerStyles,
     handleOnPress,
     handleOnPressAll,
   } = props;
   const [expanded, setExpanded] = useState(openByDefault);
 
   return (
-    <ExpandableSection
-      expanded={expanded}
-      sectionHeader={
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 10,
-          }}
-        >
-          <Text text70BO marginB-5 marginR-5 color={titleColor}>
-            {title}
-          </Text>
-          <FontAwesome5
-            name={expanded ? "angle-up" : "angle-down"}
-            color={titleColor}
-            size={20}
-          />
+    <View style={containerStyles}>
+      <ExpandableSection
+        expanded={expanded}
+        sectionHeader={
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text text70BO color={titleColor}>
+              {title}
+            </Text>
+            <FontAwesome5
+              name={expanded ? "angle-up" : "angle-down"}
+              color={titleColor}
+              size={20}
+            />
+          </View>
+        }
+        onPress={() => setExpanded(expanded ? false : true)}
+      >
+        <View style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 5 }}>
+          <TouchableWithoutFeedback onPress={handleOnPressAll}>
+            <Chip
+              color={selectAll ? activeColor : inactiveColor}
+              backgroundColor={textColor}
+              title="All"
+              size="medium"
+              style={{ marginRight: 5, marginBottom: 5 }}
+            />
+          </TouchableWithoutFeedback>
+          {options.map((muscleGroup: string, index) => {
+            const displayName = displayNameMap.get(muscleGroup) ?? muscleGroup;
+            return (
+              <TouchableWithoutFeedback
+                key={index}
+                onPress={() => handleOnPress(muscleGroup)}
+              >
+                <Chip
+                  color={
+                    filters.includes(muscleGroup) ? activeColor : inactiveColor
+                  }
+                  backgroundColor={textColor}
+                  title={displayName}
+                  size="medium"
+                  style={{ marginRight: 5, marginBottom: 5 }}
+                />
+              </TouchableWithoutFeedback>
+            );
+          })}
         </View>
-      }
-      onPress={() => setExpanded(expanded ? false : true)}
-    >
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-        <TouchableWithoutFeedback onPress={handleOnPressAll}>
-          <Chip
-            color={selectAll ? activeColor : inactiveColor}
-            backgroundColor={textColor}
-            title="All"
-            size="medium"
-            style={{ marginRight: 5, marginBottom: 5 }}
-          />
-        </TouchableWithoutFeedback>
-        {options.map((muscleGroup: string, index) => {
-          const displayName = displayNameMap.get(muscleGroup) ?? muscleGroup;
-          return (
-            <TouchableWithoutFeedback
-              key={index}
-              onPress={() => handleOnPress(muscleGroup)}
-            >
-              <Chip
-                color={
-                  filters.includes(muscleGroup) ? activeColor : inactiveColor
-                }
-                backgroundColor={textColor}
-                title={displayName}
-                size="medium"
-                style={{ marginRight: 5, marginBottom: 5 }}
-              />
-            </TouchableWithoutFeedback>
-          );
-        })}
-      </View>
-    </ExpandableSection>
+      </ExpandableSection>
+    </View>
   );
 }
 
@@ -115,11 +119,12 @@ export default function ExerciseFilters() {
   );
   const [selectedMuscles, setSelectedMuscles] = useState([] as Muscle[]);
   const [availableMuscles, setAvailableMuscles] = useState(muscles.slice());
-  const [selectedTypes, setSelectedTypes] = useState([] as Equipment[]);
+  const [selectedTypes, setSelectedTypes] = useState([] as ResistanceType[]);
   const [allMuscleGroups, setAllMuscleGroups] = useState(true);
   const [allMuscles, setAllMuscles] = useState(true);
   const [allTypes, setAllTypes] = useState(true);
 
+  // Initialize all name mappings
   const muscleGroupNameMap: Map<string, string> = new Map();
   const muscleGroupMuscleMap: Map<string, string[]> = new Map();
   const muscleNameMap: Map<string, string> = new Map();
@@ -135,7 +140,7 @@ export default function ExerciseFilters() {
     const mapping = muscleMap.get(muscle);
     if (mapping) muscleNameMap.set(muscle, mapping.displayName);
   });
-  equipment.forEach((type) => {
+  resistanceTypes.forEach((type) => {
     const mapping = exerciseTypeMap.get(type);
     if (mapping) typeNameMap.set(type, mapping.displayName);
   });
@@ -154,22 +159,25 @@ export default function ExerciseFilters() {
 
   const handleOnPressMuscleGroup = (muscleGroup: string) => {
     setAllMuscleGroups(false);
-    handleOnPressAllMuscles();
-    let curGroups = selectedMuscleGroups as string[];
-    curGroups = validateState(curGroups, muscleGroup);
+    const curGroups = selectedMuscleGroups as string[];
+    const newGroups = validateState(curGroups, muscleGroup);
 
+    // Get muscles available to new set of muscle groups
     let availableMuscles: Muscle[] = [];
-    for (let group of curGroups) {
+    for (let group of newGroups) {
       const mapping = muscleGroupMuscleMap.get(group);
       if (mapping) {
         availableMuscles = availableMuscles.concat(mapping as Muscle[]);
       }
     }
 
-    if (curGroups.length === 0) {
+    if (newGroups.length === 0) {
       handleOnPressAllMuscleGroups();
     } else {
-      setSelectedMuscleGroups(curGroups as MuscleGroup[]);
+      if (newGroups.length < curGroups.length) {
+        handleOnPressAllMuscles();
+      }
+      setSelectedMuscleGroups(newGroups as MuscleGroup[]);
       setAvailableMuscles(availableMuscles);
     }
   };
@@ -192,7 +200,7 @@ export default function ExerciseFilters() {
     if (curTypes.length === 0) {
       handleOnPressAllTypes();
     } else {
-      setSelectedTypes(curTypes as Equipment[]);
+      setSelectedTypes(curTypes as ResistanceType[]);
     }
   };
 
@@ -211,6 +219,13 @@ export default function ExerciseFilters() {
   const handleOnPressAllTypes = () => {
     setSelectedTypes([]);
     setAllTypes(true);
+  };
+
+  const filterStyles: ViewStyle = {
+    backgroundColor: COLORS.foreground,
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 5,
   };
 
   return (
@@ -237,6 +252,7 @@ export default function ExerciseFilters() {
           displayNameMap={muscleGroupNameMap}
           selectAll={allMuscleGroups}
           openByDefault
+          containerStyles={filterStyles}
           handleOnPress={handleOnPressMuscleGroup}
           handleOnPressAll={handleOnPressAllMuscleGroups}
         />
@@ -250,19 +266,21 @@ export default function ExerciseFilters() {
           options={availableMuscles}
           displayNameMap={muscleNameMap}
           selectAll={allMuscles}
+          containerStyles={filterStyles}
           handleOnPress={handleOnPressMuscle}
           handleOnPressAll={handleOnPressAllMuscles}
         />
         <ChipListInput
-          title="Exercise Types"
+          title="Resistance Types"
           titleColor={COLORS.text}
           activeColor={COLORS.active}
           inactiveColor={COLORS.background}
           textColor={COLORS.text}
           filters={selectedTypes}
-          options={equipment.slice()}
+          options={resistanceTypes.slice()}
           displayNameMap={typeNameMap}
           selectAll={allTypes}
+          containerStyles={filterStyles}
           handleOnPress={handleOnPressType}
           handleOnPressAll={handleOnPressAllTypes}
         />
