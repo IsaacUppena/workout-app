@@ -13,7 +13,7 @@ type TableRow = {
 };
 
 type TableProps = {
-  width: number;
+  width: string | number;
   columns: TableColumnDef[];
   rows: TableRow[];
   indexColHeader?: string;
@@ -22,6 +22,8 @@ type TableProps = {
   headerStyle?: ViewStyle;
   rowTextColor?: string;
   rowStyle?: ViewStyle;
+  alignCols?: "left" | "center" | "right";
+  altRowColor?: string;
 };
 
 export default function Table(props: TableProps) {
@@ -35,28 +37,30 @@ export default function Table(props: TableProps) {
     headerStyle,
     rowTextColor,
     rowStyle,
+    alignCols,
+    altRowColor,
   } = props;
 
   const tableStyles: ViewStyle = {
     width,
-    flex: 1,
     flexDirection: "column",
   };
 
   const headerStyles: ViewStyle = {
-    flex: 1,
     flexDirection: "row",
   };
 
   const rowStyles: ViewStyle = {
-    flex: 1,
     flexDirection: "row",
-    borderTopColor: "#222233",
-    borderTopWidth: 1,
   };
 
   const columnStyles: ViewStyle = {
-    alignItems: "center",
+    alignItems:
+      alignCols === "right"
+        ? "flex-end"
+        : alignCols === "left"
+        ? "flex-start"
+        : "center",
   };
 
   type HeaderProps = {
@@ -103,7 +107,7 @@ export default function Table(props: TableProps) {
       <View style={style}>
         {showIndexCol && (
           <View style={{ ...columnStyles, flex: 1 }}>
-            <Text text70BO color={rowTextColor}>
+            <Text text80BO color={rowTextColor}>
               {rowNumber}
             </Text>
           </View>
@@ -112,7 +116,7 @@ export default function Table(props: TableProps) {
           const curCol = row[curColDef.field];
           return (
             <View key={index} style={{ ...columnStyles, flex: curColDef.span }}>
-              <Text text70BO color={rowTextColor}>
+              <Text text80BO color={rowTextColor}>
                 {curCol}
               </Text>
             </View>
@@ -126,13 +130,21 @@ export default function Table(props: TableProps) {
     <View style={tableStyles}>
       <Header colDefs={columns} style={{ ...headerStyles, ...headerStyle }} />
       {rows.map((row, index) => {
+        let style = { ...rowStyles, ...rowStyle };
+
+        if (altRowColor && index % 2 === 0) {
+          style = {
+            ...style,
+            backgroundColor: altRowColor,
+          };
+        }
         return (
           <Row
             key={index}
             rowNumber={index + 1}
             row={row}
             colDefs={columns}
-            style={{ ...rowStyles, ...rowStyle }}
+            style={style}
           />
         );
       })}

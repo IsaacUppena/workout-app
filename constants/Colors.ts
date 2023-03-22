@@ -15,14 +15,14 @@ const neutral = {
 };
 
 const data = {
-  violet: "#9400D3",
+  violet: "#BE0CE7",
   indigo: "#4B0082",
-  blue: "#0000FF",
-  green: "#00AA00",
-  yellow: "#FFFF00",
-  orange: "#FF7F00",
-  red: "#FF0000",
-  pink: "#FF9999",
+  blue: "#24E0E7",
+  teal: "#24E7A6",
+  green: "#24E717",
+  yellow: "#FFE70C",
+  orange: "#FFA60C",
+  red: "#FF3131",
 };
 
 export default {
@@ -34,6 +34,7 @@ export default {
     container: neutral.lighter,
     foreground: neutral.light,
     inactive: neutral.medium,
+    divider: neutral.medium,
     active: primary.default,
     disabled: neutral.medium,
   },
@@ -45,6 +46,7 @@ export default {
     container: neutral.darker,
     foreground: neutral.dark,
     inactive: neutral.medium,
+    divider: neutral.medium,
     active: primary.default,
     disabled: neutral.medium,
   },
@@ -53,7 +55,7 @@ export default {
 export const muscleGroupColors = {
   arms: data.green,
   back: data.red,
-  cardio: data.pink,
+  cardio: data.teal,
   chest: data.orange,
   core: data.yellow,
   legs: data.violet,
@@ -67,6 +69,7 @@ export const measurementColors = {
   calories: data.yellow,
   time: data.orange,
   rpe: data.blue,
+  distance: data.violet,
 };
 
 export const exerciseTypeColors = {
@@ -77,7 +80,7 @@ export const exerciseTypeColors = {
   ezBar: data.blue,
   kettlebell: data.indigo,
   machine: data.violet,
-  weightPlate: data.pink,
+  weightPlate: data.teal,
   medicineBall: "#FFF",
   other: "#000",
 };

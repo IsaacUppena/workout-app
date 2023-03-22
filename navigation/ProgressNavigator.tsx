@@ -5,10 +5,21 @@ import StackHeader from "../components/StackHeader";
 import AddExerciseScreen from "../screens/AddExerciseScreen";
 import { Text, View } from "react-native-ui-lib";
 import { TouchableOpacity } from "react-native";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useEffect } from "react";
 
 const Stack = createStackNavigator();
 
-export default function ProgressNavigator() {
+export default function ProgressNavigator({ navigation, route }: any) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Auth";
+
+  useEffect(() => {
+    console.log(routeName);
+    navigation.setOptions({
+      tabBarVisible: routeName !== "LogExercise",
+    });
+  }, [navigation, routeName]);
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -16,7 +27,7 @@ export default function ProgressNavigator() {
         component={ProgressScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="LogExercise"
         component={LogExerciseScreen}
         options={{
@@ -31,7 +42,7 @@ export default function ProgressNavigator() {
         options={{
           presentation: "modal",
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

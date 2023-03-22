@@ -13,7 +13,7 @@ import {
 import * as React from "react";
 import { ColorSchemeName, Pressable, View } from "react-native";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import TabOneScreen from "../screens/TabOneScreen";
+import HomeScreen from "../screens/HomeScreen";
 import ProgressScreen from "../screens/ProgressScreen";
 import LibraryScreen from "../screens/LibraryScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -27,6 +27,8 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import useColors from "../hooks/useColors";
 import ProgressNavigator from "./ProgressNavigator";
 import { createStackNavigator } from "@react-navigation/stack";
+import HomeNavigator from "./HomeNavigator";
+import LogExerciseScreen from "../screens/LogExerciseScreen";
 
 export default function Navigation({
   colorScheme,
@@ -47,11 +49,15 @@ export default function Navigation({
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
@@ -62,6 +68,8 @@ function RootNavigator() {
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
       />
+      {/* <Stack.Screen name="LogExercise" component={LogExerciseScreen} /> */}
+      <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
       {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group> */}
@@ -73,22 +81,14 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-
-type TabParamList = {
-  TabOne: undefined;
-  ProgressTab: undefined;
-  LibraryTab: undefined;
-  ProfileTab: undefined;
-};
-
-const BottomTab = createBottomTabNavigator<TabParamList>();
+const BottomTab = createBottomTabNavigator();
 
 function BottomTabNavigator() {
   const COLORS = useColors();
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="HomeTab"
       screenOptions={{
         tabBarActiveTintColor: COLORS.active,
         tabBarStyle: {
@@ -98,28 +98,13 @@ function BottomTabNavigator() {
       }}
     >
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<"TabOne">) => ({
+        name="HomeTab"
+        component={HomeScreen}
+        options={{
           title: "Good Morning",
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate("Modal")}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}
-            >
-              <FontAwesome5
-                name="info-circle"
-                size={25}
-                color={COLORS.text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        })}
+        }}
       />
       <BottomTab.Screen
         name="ProgressTab"

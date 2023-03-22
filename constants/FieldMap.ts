@@ -1,4 +1,4 @@
-import { Measurements } from "../models/Exercise";
+import { Measurement } from "../models/Exercise";
 import { measurementColors } from "./Colors";
 
 type MeasurementDef = {
@@ -6,7 +6,7 @@ type MeasurementDef = {
   color: string;
 };
 
-export const measurementMap = new Map<Measurements, MeasurementDef>([
+export const measurementMap = new Map<Measurement, MeasurementDef>([
   [
     "calories",
     {
@@ -40,6 +40,13 @@ export const measurementMap = new Map<Measurements, MeasurementDef>([
     {
       displayName: "Weight",
       color: measurementColors.weight,
+    },
+  ],
+  [
+    "distance",
+    {
+      displayName: "Distance",
+      color: measurementColors.distance,
     },
   ],
 ]);

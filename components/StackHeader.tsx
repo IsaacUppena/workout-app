@@ -7,27 +7,29 @@ import { ViewStyle } from "react-native";
 import { useEffect } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import IconButton from "./IconButton";
+import { LoggedWorkout } from "../models/Log";
 
 export default function StackHeader(props: any) {
   const COLORS = useColors();
   const { navigation, route } = props;
-  const date = route.params;
-  const dateObj = new Date(date.timestamp);
+  const { selectedWorkout } = route.params;
+  console.log(selectedWorkout.date);
+  const dateObj = new Date(selectedWorkout.date);
   const dateString = dateObj.toLocaleDateString();
 
-  useEffect(() => {
-    navigation.getParent()?.setOptions({
-      tabBarStyle: {
-        display: "none",
-      },
-    });
-    return () =>
-      navigation.getParent()?.setOptions({
-        tabBarStyle: {
-          backgroundColor: COLORS.container,
-        },
-      });
-  }, [navigation]);
+  // useEffect(() => {
+  //   navigation.getParent()?.setOptions({
+  //     tabBarStyle: {
+  //       display: "none",
+  //     },
+  //   });
+  //   return () =>
+  //     navigation.getParent()?.setOptions({
+  //       tabBarStyle: {
+  //         backgroundColor: COLORS.container,
+  //       },
+  //     });
+  // }, [navigation]);
 
   const handleGoBack = () => {
     navigation.goBack();

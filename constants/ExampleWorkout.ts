@@ -85,9 +85,9 @@ const exampleExercises2: LoggedExercise[] = [
       resistanceType: "dumbbell",
     },
     sets: [
-      { distance: 10, weight: 160, rpe: 7.5 },
-      { distance: 10, weight: 170, rpe: 8.5 },
-      { distance: 8, weight: 180, rpe: 9.5 },
+      { weight: 160, distance: 10, rpe: 7.5 },
+      { weight: 170, distance: 10, rpe: 8.5 },
+      { weight: 180, distance: 8, rpe: 9.5 },
     ],
   },
   {

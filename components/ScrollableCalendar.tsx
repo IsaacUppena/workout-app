@@ -1,5 +1,5 @@
 import { FontAwesome5 } from "@expo/vector-icons";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import useColors from "../hooks/useColors";
 import CalendarStrip from "react-native-calendar-strip";
@@ -11,78 +11,32 @@ import Layout from "../constants/Layout";
 import { useEffect, useState } from "react";
 import { getWorkoutByDate } from "../services/ExerciseService";
 import { Moment } from "moment";
+import LoggedExerciseRow from "./LoggedExerciseRow";
 
-const ExerciseRow = ({ exercise }: { exercise: LoggedExercise }) => {
-  const COLORS = useColors();
-  const numSets = exercise.sets.length;
-
-  const sumMeasurement = (sets: LoggedSet[], measurementName: string) => {
-    let sum = 0;
-    for (let set of sets) {
-      sum += set[measurementName] ?? 0;
-    }
-    return sum;
-  };
-
-  return (
-    <View
-      style={{
-        // height: 50,
-        backgroundColor: COLORS.foreground,
-        width: "100%",
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 10,
-      }}
-    >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text text70BO color={COLORS.textSecondary}>
-          {exercise.exercise.name}
-        </Text>
-        <MuscleChip muscleName={exercise.exercise.primaryMuscle} isPrimary />
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text text80BO color={COLORS.textTertiary}>
-          {numSets} {numSets > 1 ? "Sets" : "Set"}
-        </Text>
-        {exercise.exercise.measurements.includes("reps") && (
-          <Text text80BO color={COLORS.textTertiary}>
-            {" "}
-            • {sumMeasurement(exercise.sets, "reps")} Reps
-          </Text>
-        )}
-        {exercise.exercise.measurements.includes("weight") && (
-          <Text text80BO color={COLORS.textTertiary}>
-            {" "}
-            • {sumMeasurement(exercise.sets, "weight")} lbs
-          </Text>
-        )}
-        {exercise.exercise.measurements.includes("calories") && (
-          <Text text80BO color={COLORS.textTertiary}>
-            {" "}
-            • {sumMeasurement(exercise.sets, "calories")} Cal
-          </Text>
-        )}
-        {exercise.exercise.measurements.includes("distance") && (
-          <Text text80BO color={COLORS.textTertiary}>
-            {" "}
-            • {sumMeasurement(exercise.sets, "distance")} yards
-          </Text>
-        )}
-      </View>
-    </View>
-  );
+type SortableCalendarProps = {
+  selectedWorkout: LoggedWorkout;
+  handleOnPressEdit: () => void;
+  handleOnPressSummary: () => void;
+  handleOnPressCalendar: () => void;
+  handleOnChangeWorkout: (workout: LoggedWorkout) => void;
 };
 
-export default function SortableCalendar() {
-  const [workout, setWorkout] = useState({} as LoggedWorkout);
+export default function SortableCalendar(props: SortableCalendarProps) {
   const [date, setDate] = useState(new Date());
   const COLORS = useColors();
+
+  const {
+    selectedWorkout,
+    handleOnPressEdit,
+    handleOnPressSummary,
+    handleOnChangeWorkout,
+    handleOnPressCalendar,
+  } = props;
 
   const updateWorkout = async () => {
     const formattedDate = date.toLocaleDateString("en-CA");
     const newWorkout = await getWorkoutByDate(formattedDate);
-    setWorkout(newWorkout);
+    handleOnChangeWorkout(newWorkout);
   };
 
   useEffect(() => {
@@ -97,25 +51,32 @@ export default function SortableCalendar() {
     weekStartDate: Moment;
     weekEndDate: Moment;
   }) => {
-    console.log("Opened calendar");
+    handleOnPressCalendar();
   };
 
   const exampleExercises = exampleWorkout.exercises;
 
+  const buttonStyles: ViewStyle = {
+    backgroundColor: COLORS.active,
+    borderRadius: 10,
+    height: 50,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    width: Layout.window.width / 2.2,
+    marginRight: 10,
+  };
+
   return (
     <View
       style={{
-        backgroundColor: COLORS.container,
-        borderRadius: 10,
+        backgroundColor: COLORS.background,
+        borderTopRightRadius: 30,
+        borderTopLeftRadius: 30,
         padding: 15,
         flex: 1,
       }}
     >
-      {/* <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-        <TouchableOpacity onPress={() => console.log("test")}>
-          <FontAwesome5 name="expand-alt" color={COLORS.text} size={20} />
-        </TouchableOpacity>
-      </View> */}
       <CalendarStrip
         scrollable
         scrollerPaging
@@ -160,10 +121,10 @@ export default function SortableCalendar() {
           // backgroundColor: COLORS.foreground,
         }}
       >
-        {workout.exercises ? (
+        {selectedWorkout.exercises ? (
           <ScrollView>
-            {workout.exercises.map((exercise, index) => (
-              <ExerciseRow key={index} exercise={exercise} />
+            {selectedWorkout.exercises.map((exercise, index) => (
+              <LoggedExerciseRow key={index} exercise={exercise} />
             ))}
           </ScrollView>
         ) : (
@@ -191,37 +152,22 @@ export default function SortableCalendar() {
             justifyContent: "center",
           }}
         >
-          <TouchableOpacity style={{ marginTop: 10 }}>
-            <View
-              style={{
-                backgroundColor: COLORS.active,
-                borderRadius: 10,
-                height: 50,
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
-                width: Layout.window.width / 2.2,
-                marginRight: 10,
-              }}
-            >
+          <TouchableOpacity
+            style={{ marginTop: 10 }}
+            onPress={handleOnPressEdit}
+          >
+            <View style={buttonStyles}>
               <Text text70BO marginR-8 color={COLORS.text}>
                 Edit
               </Text>
               <FontAwesome5 name="edit" color={COLORS.text} size={15} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginTop: 10 }}>
-            <View
-              style={{
-                backgroundColor: COLORS.active,
-                borderRadius: 10,
-                height: 50,
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
-                width: Layout.window.width / 2.2,
-              }}
-            >
+          <TouchableOpacity
+            style={{ marginTop: 10 }}
+            onPress={handleOnPressSummary}
+          >
+            <View style={buttonStyles}>
               <Text text70BO marginR-8 color={COLORS.text}>
                 Summary
               </Text>
