@@ -67,6 +67,8 @@ export default function SortableCalendar(props: SortableCalendarProps) {
     marginRight: 10,
   };
 
+  // May want to use FlatList instead of ScrollView, can compare performance
+
   return (
     <View
       style={{

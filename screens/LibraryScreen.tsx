@@ -22,40 +22,50 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Chip from "../components/Chip";
 import ExerciseFilters from "../components/ExerciseFilters";
 import ExerciseRow from "../components/ExerciseRow";
+import Layout from "../constants/Layout";
+import { MuscleGroup, MuscleOptions, muscleGroups } from "../models/Exercise";
+import { muscleGroupMap } from "../constants/MuscleMap";
 
-function SearchInput() {
-  const [searchInput, setSearchInput] = useState("");
+type MuscleGroupButtonProps = {
+  muscleGroup: MuscleGroup;
+  handleOnPress: (muscleGroup: MuscleGroup) => void;
+};
+
+const MuscleGroupButton = (props: MuscleGroupButtonProps) => {
+  const { muscleGroup, handleOnPress } = props;
   const COLORS = useColors();
-
-  const onChangeText = (newText: string) => {
-    setSearchInput(newText);
-  };
+  const muscleButtonSize = Layout.window.width / 2.3;
+  const view = muscleGroup === "back" ? "back" : "front";
+  const displayName = muscleGroupMap.get(muscleGroup)?.displayName ?? "default";
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: COLORS.container,
-        borderRadius: 10,
-        padding: 10,
-        width: "95%",
-      }}
-    >
-      <FontAwesome5 name="search" color={COLORS.textTertiary} size={16} />
-      <TextInput
-        onChangeText={onChangeText}
-        value={searchInput}
-        placeholder="Search exercises"
+    <View style={{ marginBottom: 30, alignItems: "center" }}>
+      <TouchableOpacity
         style={{
-          color: COLORS.textSecondary,
-          fontSize: 16,
-          marginLeft: 10,
+          width: muscleButtonSize,
+          height: muscleButtonSize,
         }}
-      />
+        onPress={() => handleOnPress(muscleGroup)}
+      >
+        <View
+          style={{
+            backgroundColor: COLORS.foreground,
+            borderRadius: 20,
+          }}
+        >
+          <MuscleAnatomy
+            primaryMuscles={[muscleGroup as MuscleOptions]}
+            view={view}
+            zoom="dynamic"
+          />
+        </View>
+      </TouchableOpacity>
+      <Text text60BO marginT-10 color={COLORS.text}>
+        {displayName}
+      </Text>
     </View>
   );
-}
+};
 
 export default function LibraryScreen() {
   const [expandFilters, setExpandFilters] = useState(false);
@@ -68,45 +78,31 @@ export default function LibraryScreen() {
     width: "95%",
   };
 
+  const handleOnPressMG = (muscleGroup: MuscleGroup) => {
+    console.log(muscleGroup);
+  };
+
   return (
     <Background useSafeArea flex style={{ alignItems: "center" }}>
-      <SegmentedControl
-        segments={[{ label: "Exercises" }, { label: "Workouts" }]}
-      />
-
-      <SearchInput />
-
-      <View style={filterStyles}>
-        <ExpandableSection
-          expanded={expandFilters}
-          sectionHeader={
-            <View
-              style={{
-                flexDirection: "row",
-                // justifyContent: "space-between",
-                // width: "20%",
-                alignItems: "center",
-                paddingHorizontal: 10,
-                marginTop: 10,
-              }}
-            >
-              <Text text70BO color={COLORS.textTertiary}>
-                Filters
-              </Text>
-              <FontAwesome5
-                name="filter"
-                color={COLORS.textTertiary}
-                size={14}
-              />
-            </View>
-          }
-          onPress={() => setExpandFilters(expandFilters ? false : true)}
+      <ScrollView>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-around",
+          }}
         >
-          <ExerciseFilters />
-        </ExpandableSection>
-      </View>
-
-      <ExerciseRow />
+          {muscleGroups.map((muscleGroup, index) => {
+            return (
+              <MuscleGroupButton
+                key={index}
+                muscleGroup={muscleGroup}
+                handleOnPress={handleOnPressMG}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
     </Background>
   );
 }

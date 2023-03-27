@@ -1,6 +1,6 @@
 import { exerciseTypeColors, muscleGroupColors } from "./Colors";
 import {
-  Equipment,
+  ResistanceType,
   Measurement,
   Muscle,
   MuscleGroup,
@@ -251,13 +251,13 @@ export const muscleMap = new Map<MuscleOptions, MuscleDef>([
   ],
 ]);
 
-type ExerciseTypeDef = {
+type ResistanceTypeDef = {
   displayName: string;
   color: string;
   defaultMeasurements: Measurement[];
 };
 
-export const exerciseTypeMap = new Map<Equipment, ExerciseTypeDef>([
+export const exerciseTypeMap = new Map<ResistanceType, ResistanceTypeDef>([
   [
     "barbell",
     {
