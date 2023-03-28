@@ -13,22 +13,18 @@ import {
 import * as React from "react";
 import { ColorSchemeName, Pressable, View } from "react-native";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import HomeScreen from "../screens/HomeScreen";
-import ProgressScreen from "../screens/ProgressScreen";
-import LibraryScreen from "../screens/LibraryScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import HomeScreen from "../screens/Home/HomeScreen";
+import ProgressScreen from "../screens/Progress/ProgressScreen";
+import LibraryScreen from "../screens/Library/LibraryScreen";
+import ProfileScreen from "../screens/Profile/ProfileScreen";
 import WheelPickerScreen from "../screens/WheelPickerScreen";
-import {
-  RootStackParamList,
-  RootTabParamList,
-  RootTabScreenProps,
-} from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import useColors from "../hooks/useColors";
 import ProgressNavigator from "./ProgressNavigator";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeNavigator from "./HomeNavigator";
-import LogExerciseScreen from "../screens/LogExerciseScreen";
+import LogExerciseScreen from "../screens/Home/LogExerciseScreen";
+import { LoggedWorkout } from "../models/Log";
 
 export default function Navigation({
   colorScheme,
@@ -49,7 +45,14 @@ export default function Navigation({
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
-const Stack = createStackNavigator();
+
+export type RootStackParamList = {
+  Root: undefined;
+  NotFound: undefined;
+  HomeNavigator: { workout?: LoggedWorkout };
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
@@ -81,7 +84,15 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const BottomTab = createBottomTabNavigator();
+
+export type RootTabParamList = {
+  HomeTab: undefined;
+  ProgressTab: undefined;
+  LibraryTab: undefined;
+  ProfileTab: undefined;
+};
+
+const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const COLORS = useColors();

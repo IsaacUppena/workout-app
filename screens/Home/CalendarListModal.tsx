@@ -1,8 +1,12 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { View } from "react-native";
 import { DateData } from "react-native-calendars";
-import { CalendarList } from "../components/Themed";
+import { CalendarList } from "../../components/Themed";
+import { HomeStackParamList } from "../../navigation/HomeNavigator";
 
-export default function CalendarListModal() {
+export default function CalendarListModal(
+  props: StackScreenProps<HomeStackParamList, "CalendarList">
+) {
   // Number of scrollable months, doesn't seem to affect loading times
   const RANGE = 36;
 

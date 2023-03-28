@@ -8,16 +8,21 @@ import {
   ExpandableCalendar,
   WeekCalendar,
 } from "react-native-calendars";
-import { SegmentedControl, Background } from "../components/Themed";
-import useColors from "../hooks/useColors";
+import { SegmentedControl, Background } from "../../components/Themed";
+import useColors from "../../hooks/useColors";
 import { useState } from "react";
 import { Text } from "react-native-ui-lib";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CalendarStrip from "react-native-calendar-strip";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-import ScrollableCalendar from "../components/ScrollableCalendar";
-import { LoggedWorkout } from "../models/Log";
+import ScrollableCalendar from "../../components/ScrollableCalendar";
+import { LoggedWorkout } from "../../models/Log";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+
+// import { T } from "@react-navigation/stack";
+// import { HomeStackParamList } from "../../navigation/HomeNavigator";
+// import { RootTabParamList } from "../../navigation/index";
 
 export default function HomeScreen(props: any) {
   const [selectedWorkout, setSelectedWorkout] = useState({} as LoggedWorkout);
@@ -26,6 +31,18 @@ export default function HomeScreen(props: any) {
   const handleOnPressEdit = () => {
     // console.log("selected day", day);
     // props.navigation.navigate("EditWorkout", selectedWorkout);
+    // props.navigation.navigate()
+    // props.navigation.navigate({ name: "HomeNavigator", params: { workout } });
+
+    // props.navigation.navigate({
+    //   screen: "HomeNavigator",
+    //   params: {
+    //     screen: "EditWorkout",
+    //     params: {
+    //       selectedWorkout
+    //     }
+    //   }
+    // })
 
     props.navigation.navigate("HomeNavigator", {
       screen: "EditWorkout",
@@ -41,7 +58,7 @@ export default function HomeScreen(props: any) {
 
   const handleOnPressSummary = () => {
     props.navigation.navigate("HomeNavigator", {
-      screen: "WorkoutSummaryModal",
+      screen: "WorkoutSummary",
       params: {
         selectedWorkout,
 
@@ -55,7 +72,7 @@ export default function HomeScreen(props: any) {
 
   const handleOnPressCalendar = () => {
     props.navigation.navigate("HomeNavigator", {
-      screen: "CalendarListModal",
+      screen: "CalendarList",
       params: {
         selectedWorkout,
         // screen: "LogExercise",

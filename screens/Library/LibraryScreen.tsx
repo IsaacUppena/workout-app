@@ -1,6 +1,6 @@
-import { SegmentedControl, Background } from "../components/Themed";
+import { SegmentedControl, Background } from "../../components/Themed";
 
-import MuscleAnatomy from "../components/MuscleAnatomy";
+import MuscleAnatomy from "../../components/MuscleAnatomy";
 import { useCallback, useRef, useState } from "react";
 import {
   FlatList,
@@ -17,14 +17,18 @@ import {
   ViewStyle,
 } from "react-native";
 import { ExpandableSection, Text, TextField } from "react-native-ui-lib";
-import useColors from "../hooks/useColors";
+import useColors from "../../hooks/useColors";
 import { FontAwesome5 } from "@expo/vector-icons";
-import Chip from "../components/Chip";
-import ExerciseFilters from "../components/ExerciseFilters";
-import ExerciseRow from "../components/ExerciseRow";
-import Layout from "../constants/Layout";
-import { MuscleGroup, MuscleOptions, muscleGroups } from "../models/Exercise";
-import { muscleGroupMap } from "../constants/MuscleMap";
+import Chip from "../../components/Chip";
+import ExerciseFilters from "../../components/ExerciseFilters";
+import ExerciseRow from "../../components/ExerciseRow";
+import Layout from "../../constants/Layout";
+import {
+  MuscleGroup,
+  MuscleOptions,
+  muscleGroups,
+} from "../../models/Exercise";
+import { muscleGroupMap } from "../../constants/MuscleMap";
 
 type MuscleGroupButtonProps = {
   muscleGroup: MuscleGroup;

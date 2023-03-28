@@ -1,4 +1,8 @@
-import { SegmentedControl, Calendar, Background } from "../components/Themed";
+import {
+  SegmentedControl,
+  Calendar,
+  Background,
+} from "../../components/Themed";
 
 export default function ProgressScreen(props: any) {
   // Workout days are marked, days with notes have dot

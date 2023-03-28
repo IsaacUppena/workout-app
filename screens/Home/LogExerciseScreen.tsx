@@ -7,12 +7,12 @@ import {
   Incubator,
   Text,
 } from "react-native-ui-lib";
-import { SegmentedControl, Background } from "../components/Themed";
+import { SegmentedControl, Background } from "../../components/Themed";
 
 import { DialogHeaderProps } from "react-native-ui-lib/src/incubator";
 
 import { FontAwesome5 } from "@expo/vector-icons";
-import useColors from "../hooks/useColors";
+import useColors from "../../hooks/useColors";
 import {
   GestureResponderEvent,
   Pressable,
@@ -25,21 +25,27 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native-gesture-handler";
-import IconButton from "../components/IconButton";
-import { LoggedExercise } from "../models/Log";
-import ExerciseCard from "../components/ExerciseCard";
-import Layout from "../constants/Layout";
+import IconButton from "../../components/IconButton";
+import { LoggedExercise } from "../../models/Log";
+import ExerciseCard from "../../components/ExerciseCard";
+import Layout from "../../constants/Layout";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 
-import exampleWorkout from "../constants/ExampleWorkout";
+import exampleWorkout from "../../constants/ExampleWorkout";
 
-export default function LogExerciseScreen(props: any) {
+import { StackScreenProps } from "@react-navigation/stack";
+import { HomeStackParamList } from "../../navigation/HomeNavigator";
+
+export default function LogExerciseScreen(
+  props: StackScreenProps<HomeStackParamList, "EditWorkout">
+) {
   const exampleExercises = exampleWorkout.exercises;
-
   const [searchInput, setSearchInput] = useState("");
 
-  const day = props.route.params;
+  const { selectedWorkout } = props.route.params;
+
+  // const day = props.route.params;
   const COLORS = useColors();
   const [showDialog, setShowDialog] = useState(false);
 
@@ -57,14 +63,19 @@ export default function LogExerciseScreen(props: any) {
 
   const handleAddExercise = () => {
     console.log("created exercise");
-    props.navigation.navigate("AddExerciseModal");
+    // props.navigation.navigate("AddExercise");
+    props.navigation.navigate({
+      name: "AddExercise",
+      params: { selectedWorkout },
+    });
     // setShowDialog(true);
   };
 
-  const handleDayPress = (day: Object) => {
-    console.log("selected day", day);
-    props.navigation.navigate("LogExercise", day);
-  };
+  // const handleDayPress = (day: Date) => {
+  //   console.log("selected day", day);
+  //   props.navigation.navigate({ name: "LogExercise", params: { }})
+  //   props.navigation.navigate("LogExercise", day.toLocaleDateString());
+  // };
 
   // const onDialogDismissed = useCallback(() => {
   //   setShowDialog(false);
