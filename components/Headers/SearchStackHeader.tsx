@@ -1,26 +1,33 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput } from "react-native";
 import { Text } from "react-native-ui-lib";
 import { View } from "react-native";
 import useColors from "../../hooks/useColors";
 
 import { ViewStyle } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import IconButton from "../IconButton";
 import { LoggedWorkout } from "../../models/Log";
 import { StackHeaderProps } from "@react-navigation/stack";
 
 type TextStackHeaderProps = StackHeaderProps & {
-  // iconRight?: string;
-  // onPressIconRight?: () => void;
-  title: string;
+  placeholderText: string;
+  onChangeSearchInput: (newInput: string) => void;
   iconRight?: string;
   onPressIconRight?: () => void;
 };
 
-export default function TextStackHeader(props: TextStackHeaderProps) {
+export default function SearchStackHeader(props: TextStackHeaderProps) {
   const COLORS = useColors();
-  const { navigation, title, iconRight, onPressIconRight } = props;
+  const [isFocused, setIsFocused] = useState(false);
+  const {
+    navigation,
+    placeholderText,
+    iconRight,
+    onChangeSearchInput,
+    onPressIconRight,
+  } = props;
 
   // const { titleComponent } = route.params as StackHeaderParams;
 
@@ -31,6 +38,16 @@ export default function TextStackHeader(props: TextStackHeaderProps) {
 
   const handleGoBack = () => {
     navigation.goBack();
+  };
+
+  const searchContainerStyles: ViewStyle = {
+    backgroundColor: COLORS.foreground,
+    width: "80%",
+    alignItems: "center",
+    flexDirection: "row",
+    borderColor: isFocused ? COLORS.textTertiary : COLORS.foreground,
+    borderRadius: 10,
+    borderWidth: 2,
   };
 
   const headerContainerStyles: ViewStyle = {
@@ -53,13 +70,36 @@ export default function TextStackHeader(props: TextStackHeaderProps) {
         color={COLORS.text}
         onPress={handleGoBack}
       />
-      <Text text60BO color={COLORS.text}>
-        {title}
-      </Text>
+      <View style={searchContainerStyles}>
+        <FontAwesome5
+          name="search"
+          size={16}
+          color={COLORS.textTertiary}
+          style={{ marginLeft: 10 }}
+        />
+        <TextInput
+          style={{
+            width: "100%",
+            margin: 10,
+            fontWeight: "600",
+            fontSize: 16,
+            color: COLORS.text,
+          }}
+          onChangeText={onChangeSearchInput}
+          placeholder={placeholderText}
+          placeholderTextColor={COLORS.textTertiary}
+          selectTextOnFocus
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          autoCapitalize="none"
+          // enterKeyHint="search"
+          // inputMode="search"
+        />
+      </View>
       {iconRight && onPressIconRight ? (
         <IconButton
           name={iconRight}
-          size={80}
+          size={50}
           color={COLORS.text}
           onPress={() => onPressIconRight()}
         />

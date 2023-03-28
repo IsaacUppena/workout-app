@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import ProgressScreen from "../screens/Progress/ProgressScreen";
 import LogExerciseScreen from "../screens/Home/LogExerciseScreen";
-import StackHeader from "../components/Headers/StackHeader";
+import StackHeader from "../components/Headers/SearchStackHeader";
 import AddExerciseScreen from "../screens/Home/AddExerciseScreen";
 import { Text, View } from "react-native-ui-lib";
 import { TouchableOpacity } from "react-native";

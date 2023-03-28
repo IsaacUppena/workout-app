@@ -62,6 +62,7 @@ export const measurements = [
 export type Measurement = typeof measurements[number];
 
 export type Exercise = {
+  id: string;
   name: string;
   primaryMuscle: MuscleOptions;
   secondaryMuscles?: MuscleOptions[];

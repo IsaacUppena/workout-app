@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import ProgressScreen from "../screens/Progress/ProgressScreen";
 import EditWorkoutScreen from "../screens/Home/LogExerciseScreen";
-import StackHeader from "../components/Headers/StackHeader";
+import StackHeader from "../components/Headers/SearchStackHeader";
 import AddExerciseScreen from "../screens/Home/AddExerciseScreen";
 import { Text, View } from "react-native-ui-lib";
 import { TouchableOpacity } from "react-native";
@@ -10,6 +10,7 @@ import WorkoutSummaryScreen from "../screens/Home/WorkoutSummaryScreen";
 import CalendarListModal from "../screens/Home/CalendarListModal";
 import { LoggedWorkout } from "../models/Log";
 import TextStackHeader from "../components/Headers/TextStackHeader";
+import SearchStackHeader from "../components/Headers/SearchStackHeader";
 
 export type HomeStackParamList = {
   EditWorkout: { selectedWorkout: LoggedWorkout };
@@ -41,7 +42,18 @@ export default function HomeNavigator() {
         component={AddExerciseScreen}
         options={{
           header: (headerProps) => {
-            return <TextStackHeader title="Add Exercise" {...headerProps} />;
+            const { route } = headerProps;
+            const { onChangeSearchInput } = route.params;
+
+            return (
+              <SearchStackHeader
+                placeholderText="Search exercises"
+                onChangeSearchInput={onChangeSearchInput}
+                iconRight="filter"
+                onPressIconRight={() => console.log("test")}
+                {...headerProps}
+              />
+            );
           },
         }}
       />
