@@ -3,6 +3,7 @@ import { LoggedExercise, LoggedWorkout } from "../models/Log";
 const exampleExercises: LoggedExercise[] = [
   {
     exercise: {
+      id: "military-press-weight-reps",
       name: "Military Press",
       primaryMuscle: "shoulders",
       secondaryMuscles: ["triceps", "core"],
@@ -17,6 +18,7 @@ const exampleExercises: LoggedExercise[] = [
   },
   {
     exercise: {
+      id: "barbell-squat-weight-reps",
       name: "Barbell Squat",
       primaryMuscle: "quads",
       secondaryMuscles: ["hamstrings", "glutes"],
@@ -31,6 +33,7 @@ const exampleExercises: LoggedExercise[] = [
   },
   {
     exercise: {
+      id: "dumbbell-clean-and-jerk-weight-reps",
       name: "Dumbbell Clean and Jerk",
       primaryMuscle: "traps",
       secondaryMuscles: ["arms", "shoulders"],
@@ -46,6 +49,7 @@ const exampleExercises: LoggedExercise[] = [
   },
   {
     exercise: {
+      id: "seated-cable-row-weight-reps",
       name: "Seated Cable Row",
       primaryMuscle: "lats",
       secondaryMuscles: ["rearDelts", "scapular"],
@@ -64,6 +68,7 @@ const exampleExercises: LoggedExercise[] = [
 const exampleExercises2: LoggedExercise[] = [
   {
     exercise: {
+      id: "bench-press-weight-reps",
       name: "Bench Press",
       primaryMuscle: "pecs",
       secondaryMuscles: ["triceps", "frontDelts"],
@@ -78,6 +83,7 @@ const exampleExercises2: LoggedExercise[] = [
   },
   {
     exercise: {
+      id: "dumbbell-suitcase-carry-weight-distance",
       name: "Dumbbell Suitcase Carry",
       primaryMuscle: "forearms",
       secondaryMuscles: ["core", "traps"],
@@ -92,6 +98,7 @@ const exampleExercises2: LoggedExercise[] = [
   },
   {
     exercise: {
+      id: "running-time-calories",
       name: "Running",
       primaryMuscle: "cardio",
       secondaryMuscles: ["legs", "core"],
@@ -107,11 +114,13 @@ const exampleExercises2: LoggedExercise[] = [
 ];
 
 const exampleWorkout: LoggedWorkout = {
+  id: 1,
   exercises: exampleExercises,
   date: "2023-03-21",
 };
 
 export const exampleWorkout2: LoggedWorkout = {
+  id: 2,
   exercises: exampleExercises2,
   date: "2023-03-22",
 };

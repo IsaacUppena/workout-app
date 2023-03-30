@@ -10,7 +10,7 @@ import {
 } from "react-native-calendars";
 import { SegmentedControl, Background } from "../../components/Themed";
 import useColors from "../../hooks/useColors";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Text } from "react-native-ui-lib";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CalendarStrip from "react-native-calendar-strip";
@@ -19,73 +19,78 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import ScrollableCalendar from "../../components/ScrollableCalendar";
 import { LoggedWorkout } from "../../models/Log";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { CompositeScreenProps, useRoute } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList, RootTabParamList } from "../../navigation";
+import {
+  WorkoutContext,
+  WorkoutContextType,
+} from "../../context/WorkoutContext";
 
 // import { T } from "@react-navigation/stack";
 // import { HomeStackParamList } from "../../navigation/HomeNavigator";
 // import { RootTabParamList } from "../../navigation/index";
 
-export default function HomeScreen(props: any) {
-  const [selectedWorkout, setSelectedWorkout] = useState({} as LoggedWorkout);
+type HomeScreenNavigationProps = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, "HomeTab">,
+  StackScreenProps<RootStackParamList>
+>;
+
+export default function HomeScreen(props: HomeScreenNavigationProps) {
+  const { workout, setNewWorkout } = useContext(
+    WorkoutContext
+  ) as WorkoutContextType;
+  const [selectedWorkout, setSelectedWorkout] = useState(workout);
+  const { navigation } = props;
   const COLORS = useColors();
+
+  // const route = useRoute();
+  // useEffect(() => {
+  //   //This will run whenever params change
+
+  //   // const { params } = route;
+  //   // const { workout } = route.params ?? { workout: undefined };
+  //   const { workout  } = route.params ?? { workout: undefined };
+
+  //   console.log("TRIGGERD");
+  //   if (workout) {
+  //     console.log(`Workout ID: ${workout.id}`);
+  //     setSelectedWorkout(workout);
+  //   }
+  // }, [route]);
 
   const handleOnPressEdit = () => {
     // console.log("selected day", day);
-    // props.navigation.navigate("EditWorkout", selectedWorkout);
-    // props.navigation.navigate()
-    // props.navigation.navigate({ name: "HomeNavigator", params: { workout } });
 
-    // props.navigation.navigate({
-    //   screen: "HomeNavigator",
-    //   params: {
-    //     screen: "EditWorkout",
-    //     params: {
-    //       selectedWorkout
-    //     }
-    //   }
-    // })
-
-    props.navigation.navigate("HomeNavigator", {
+    navigation.navigate("HomeNavigator", {
       screen: "EditWorkout",
       params: {
         selectedWorkout,
-        // screen: "LogExercise",
-        // params: {
-        //   selectedWorkout,
-        // },
       },
     });
   };
 
   const handleOnPressSummary = () => {
-    props.navigation.navigate("HomeNavigator", {
+    navigation.navigate("HomeNavigator", {
       screen: "WorkoutSummary",
       params: {
         selectedWorkout,
-
-        // screen: "LogExercise",
-        // params: {
-        //   selectedWorkout,
-        // },
       },
     });
   };
 
   const handleOnPressCalendar = () => {
-    props.navigation.navigate("HomeNavigator", {
+    navigation.navigate("HomeNavigator", {
       screen: "CalendarList",
       params: {
         selectedWorkout,
-        // screen: "LogExercise",
-        // params: {
-        //   selectedWorkout,
-        // },
       },
     });
   };
 
-  const handleOnChangeWorkout = (workout: LoggedWorkout) => {
-    setSelectedWorkout(workout);
-  };
+  // const handleOnChangeWorkout = (workout: LoggedWorkout) => {
+  //   setSelectedWorkout(workout);
+  // };
 
   return (
     <Background useSafeArea flex>
@@ -94,8 +99,8 @@ export default function HomeScreen(props: any) {
         LOG
       </Text> */}
       <ScrollableCalendar
-        selectedWorkout={selectedWorkout}
-        handleOnChangeWorkout={handleOnChangeWorkout}
+        // selectedWorkout={selectedWorkout}
+        // handleOnChangeWorkout={handleOnChangeWorkout}
         handleOnPressEdit={handleOnPressEdit}
         handleOnPressSummary={handleOnPressSummary}
         handleOnPressCalendar={handleOnPressCalendar}

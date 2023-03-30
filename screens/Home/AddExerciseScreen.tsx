@@ -12,6 +12,7 @@ import MuscleChip from "../../components/MuscleChip";
 import { TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import Layout from "../../constants/Layout";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 type ExerciseRowProps = {
   selected: boolean;
@@ -117,7 +118,7 @@ export default function AddExerciseScreen() {
           />
         )}
       />
-      <View
+      {/* <View
         style={{
           position: "absolute",
           bottom: 0,
@@ -128,6 +129,19 @@ export default function AddExerciseScreen() {
           justifyContent: "center",
           paddingTop: 20,
         }}
+      > */}
+      <LinearGradient
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          height: 200,
+          flexDirection: "row",
+          justifyContent: "center",
+          paddingTop: 80,
+        }}
+        locations={[0, 0.8]}
+        colors={["transparent", COLORS.background]}
       >
         <TouchableOpacity onPress={handleOnAddExercise}>
           <View
@@ -146,7 +160,7 @@ export default function AddExerciseScreen() {
             <FontAwesome5 name="plus" color={COLORS.text} size={16} />
           </View>
         </TouchableOpacity>
-      </View>
+      </LinearGradient>
     </Background>
   );
 }

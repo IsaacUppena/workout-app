@@ -37,7 +37,7 @@ export default function MuscleChip(props: MuscleChipProps) {
   return (
     <View style={containerStyle}>
       <Chip
-        title={displayName}
+        title={displayName.toUpperCase()}
         color={color}
         backgroundColor={COLORS.container}
         outlined={!isPrimary}

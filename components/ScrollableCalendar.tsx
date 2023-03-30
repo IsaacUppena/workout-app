@@ -8,35 +8,44 @@ import { LoggedExercise, LoggedSet, LoggedWorkout } from "../models/Log";
 import exampleWorkout from "../constants/ExampleWorkout";
 import MuscleChip from "./MuscleChip";
 import Layout from "../constants/Layout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getWorkoutByDate } from "../services/ExerciseService";
 import { Moment } from "moment";
 import LoggedExerciseRow from "./LoggedExerciseRow";
+import { WorkoutContext, WorkoutContextType } from "../context/WorkoutContext";
 
 type SortableCalendarProps = {
-  selectedWorkout: LoggedWorkout;
+  // selectedWorkout: LoggedWorkout;
   handleOnPressEdit: () => void;
   handleOnPressSummary: () => void;
   handleOnPressCalendar: () => void;
-  handleOnChangeWorkout: (workout: LoggedWorkout) => void;
+  // handleOnChangeWorkout: (workout: LoggedWorkout) => void;
 };
 
 export default function SortableCalendar(props: SortableCalendarProps) {
+  const { workout, setNewWorkout } = useContext(
+    WorkoutContext
+  ) as WorkoutContextType;
   const [date, setDate] = useState(new Date());
+  const [selectedWorkout, setSelectedWorkout] = useState(workout);
   const COLORS = useColors();
 
   const {
-    selectedWorkout,
+    // selectedWorkout,
     handleOnPressEdit,
     handleOnPressSummary,
-    handleOnChangeWorkout,
+    // handleOnChangeWorkout,
     handleOnPressCalendar,
   } = props;
 
   const updateWorkout = async () => {
     const formattedDate = date.toLocaleDateString("en-CA");
     const newWorkout = await getWorkoutByDate(formattedDate);
-    handleOnChangeWorkout(newWorkout);
+
+    console.log(newWorkout.id);
+    setSelectedWorkout(newWorkout);
+    setNewWorkout(newWorkout);
+    // handleOnChangeWorkout(newWorkout);
   };
 
   useEffect(() => {

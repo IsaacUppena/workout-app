@@ -86,7 +86,7 @@ function RootNavigator() {
  */
 
 export type RootTabParamList = {
-  HomeTab: undefined;
+  HomeTab: { workout?: LoggedWorkout };
   ProgressTab: undefined;
   LibraryTab: undefined;
   ProfileTab: undefined;

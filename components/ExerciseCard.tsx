@@ -1,5 +1,9 @@
 import { View, ViewStyle } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  FlatList,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import useColors from "../hooks/useColors";
 import Layout from "../constants/Layout";
 import { LoggedExercise, LoggedSet } from "../models/Log";
@@ -16,40 +20,30 @@ import { measurementMap } from "../constants/FieldMap";
 
 type ExerciseCardProps = {
   log: LoggedExercise;
-  onPress: Function;
+  onChange: (updatedExercise: LoggedExercise) => void;
 };
 
 export default function ExerciseCard(props: ExerciseCardProps) {
-  const { log, onPress } = props;
+  const { log, onChange } = props;
   const COLORS = useColors();
 
   const cardBackgroundStyles: ViewStyle = {
-    backgroundColor: COLORS.container,
-    width: 0.9 * Layout.window.width,
-    borderRadius: 25,
-    padding: 15,
-    // marginVertical: 20,
+    backgroundColor: COLORS.background,
+    width: Layout.window.width,
   };
 
   const cardHeaderStyles: ViewStyle = {
-    // width: 340,
+    backgroundColor: COLORS.container,
+    padding: 10,
+    paddingHorizontal: 15,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   };
 
   const cardContentStyles: ViewStyle = {
-    backgroundColor: COLORS.container,
     flexDirection: "row",
-    marginTop: 20,
-    // justifyContent: "center",
-  };
-
-  const pictureStyles = {
-    width: 80,
-    height: 80,
-    backgroundColor: COLORS.background,
-    borderRadius: 10,
-    marginRight: 10,
+    justifyContent: "center",
   };
 
   const columns = Object.keys(log.sets[0]).map((measurement) => {
@@ -63,6 +57,10 @@ export default function ExerciseCard(props: ExerciseCardProps) {
   });
 
   const { primaryMuscle, secondaryMuscles } = log.exercise;
+
+  const handleAddSet = () => {
+    console.log("Added Set");
+  };
 
   const test = (
     <View
@@ -78,54 +76,44 @@ export default function ExerciseCard(props: ExerciseCardProps) {
     </View>
   );
   return (
-    <Drawer
-      style={{ borderRadius: 25, margin: 15 }}
-      rightItems={[
-        {
-          background: "red",
-          onPress: () => console.log("Delete"),
-          customElement: test,
-        },
-      ]}
-    >
-      {/* <TouchableOpacity onPress={() => onPress}> */}
-      <View style={cardBackgroundStyles}>
-        <View style={cardHeaderStyles}>
-          {/* <View style={pictureStyles} /> */}
-          <View>
-            <Text text50BO marginB-8 color={COLORS.text}>
-              {log.exercise.name}
-            </Text>
-            <View style={{ flexDirection: "row" }}>
-              <MuscleChip
-                muscleName={primaryMuscle}
-                isPrimary
-                containerStyle={{ marginRight: 5 }}
-              />
-              {secondaryMuscles
-                ? secondaryMuscles.map((muscle: MuscleOptions, index) => (
-                    <MuscleChip
-                      key={index}
-                      muscleName={muscle}
-                      containerStyle={{ marginRight: 5 }}
-                    />
-                  ))
-                : ""}
-            </View>
-          </View>
-        </View>
-        <View style={cardContentStyles}>
-          <FlexTable
-            columns={columns}
-            rows={log.sets}
-            width={324}
-            headerTextColor={COLORS.text}
-            rowTextColor={COLORS.textSecondary}
-            showIndexCol
-            indexColHeader="Set"
-          />
-        </View>
+    <View style={cardBackgroundStyles}>
+      <View style={cardHeaderStyles}>
+        <Text text70BO color={COLORS.text}>
+          {log.exercise.name}
+        </Text>
+        <MuscleChip muscleName={primaryMuscle} isPrimary />
       </View>
-    </Drawer>
+      <View style={cardContentStyles}>
+        <FlexTable
+          columns={columns}
+          rows={log.sets}
+          width={324}
+          headerTextColor={COLORS.text}
+          rowTextColor={COLORS.textSecondary}
+          showIndexCol
+          indexColHeader="Set"
+        />
+      </View>
+      <TouchableWithoutFeedback onPress={handleAddSet}>
+        <View
+          style={{
+            backgroundColor: COLORS.foreground,
+            width: "80%",
+            borderRadius: 10,
+            marginHorizontal: "10%",
+            marginVertical: 10,
+            justifyContent: "center",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <FontAwesome5 name="plus" color={COLORS.text} size={10} />
+          <Text text80BO marginL-3 color={COLORS.text}>
+            Add Set
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
   );
 }

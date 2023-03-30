@@ -26,24 +26,33 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import IconButton from "../../components/IconButton";
-import { LoggedExercise } from "../../models/Log";
+import { LoggedExercise, LoggedWorkout } from "../../models/Log";
 import ExerciseCard from "../../components/ExerciseCard";
 import Layout from "../../constants/Layout";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import exampleWorkout from "../../constants/ExampleWorkout";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "../../navigation/HomeNavigator";
+import {
+  WorkoutContext,
+  WorkoutContextType,
+} from "../../context/WorkoutContext";
 
 export default function LogExerciseScreen(
   props: StackScreenProps<HomeStackParamList, "EditWorkout">
 ) {
-  const exampleExercises = exampleWorkout.exercises;
   const [searchInput, setSearchInput] = useState("");
+  const { workout } = useContext(WorkoutContext) as WorkoutContextType;
+  const selectedWorkout = workout;
 
-  const { selectedWorkout } = props.route.params;
+  const { route, navigation } = props;
+
+  // const { selectedWorkout } = route.params;
+  // const [workout, setWorkout] = useState(selectedWorkout);
+  const selectedExercises = selectedWorkout.exercises;
 
   // const day = props.route.params;
   const COLORS = useColors();
@@ -53,9 +62,43 @@ export default function LogExerciseScreen(
     flex: 1,
     width: "100%",
     alignItems: "center",
-    // justifyContent: "space-between",
     flexDirection: "column",
+    // justifyContent: "space-between",
   };
+
+  // console.log(workout);
+
+  // useEffect(
+  //   () =>
+  //     navigation.addListener("beforeRemove", (e) => {
+  //       // the navigation.navigate will fire beforeRemove which causes an infinite loop. we guard this here
+  //       if (e.data.action.type === "NAVIGATE") {
+  //         return;
+  //       }
+  //       // Prevent default behavior of leaving the screen
+  //       console.log(workout.id);
+  //       e.preventDefault();
+
+  //       // navigate manually
+  //       // navigation.navigate({
+  //       //     name: 'Home',
+  //       //     params: { post: postText },
+  //       //     merge: true,
+  //       // });
+  //       // navigation.navigate("HomeNavigator", {
+  //       //   screen: "EditWorkout",
+  //       //   params: {
+  //       //     selectedWorkout,
+  //       //   },
+  //       // });
+
+  //       navigation.navigate("Root", {
+  //         name: "HomeTab",
+  //         params: { workout },
+  //       });
+  //     }),
+  //   [navigation]
+  // );
 
   const onChangeText = (newText: string) => {
     setSearchInput(newText);
@@ -91,14 +134,20 @@ export default function LogExerciseScreen(
     <Background useSafeArea flex>
       <View style={containerStyles}>
         <FlatList
-          data={exampleExercises}
+          contentContainerStyle={{
+            paddingBottom:
+              selectedExercises[selectedExercises.length - 1].sets.length * 5 +
+              90,
+          }}
+          // contentOffset={{ x: 0, y: 200 }}
+          data={selectedExercises}
           renderItem={({ item, index }) => (
-            <View>
+            <View style={{ marginTop: 10 }}>
               <ExerciseCard log={item} onPress={() => {}} />
             </View>
           )}
           keyExtractor={(item, index) => `${index}`}
-        ></FlatList>
+        />
       </View>
       {/* <View
         style={{
@@ -108,33 +157,19 @@ export default function LogExerciseScreen(
           backgroundColor: "#fff",
         }}
       > */}
-      <View
+      <LinearGradient
         style={{
           position: "absolute",
           bottom: 0,
           width: "100%",
-          height: 100,
-          backgroundColor: "#FFF",
+          height: 160,
           flexDirection: "row",
           justifyContent: "center",
-          paddingTop: 20,
+          paddingTop: 40,
         }}
+        locations={[0, 0.8]}
+        colors={["transparent", COLORS.background]}
       >
-        {/* <LinearGradient
-        colors={["transparent", "000"]}
-        locations={[0, 0.6]}
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          height: 100,
-          // backgroundColor: "#FFF",
-          flexDirection: "row",
-          justifyContent: "center",
-          paddingTop: 20,
-        }}
-      > */}
-
         <Pressable onPress={handleAddExercise}>
           <View
             style={{
@@ -153,7 +188,7 @@ export default function LogExerciseScreen(
             <FontAwesome5 name="plus" color={COLORS.text} />
           </View>
         </Pressable>
-      </View>
+      </LinearGradient>
       {/* </LinearGradient> */}
       <Incubator.Dialog
         width={"90%"}

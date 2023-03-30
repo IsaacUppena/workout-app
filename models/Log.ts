@@ -16,6 +16,7 @@ export type LoggedExercise = {
 };
 
 export type LoggedWorkout = {
+  id: number;
   exercises: LoggedExercise[];
   date: string;
   notes?: string;
