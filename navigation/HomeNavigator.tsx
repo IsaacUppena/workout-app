@@ -13,8 +13,8 @@ import TextStackHeader from "../components/Headers/TextStackHeader";
 import SearchStackHeader from "../components/Headers/SearchStackHeader";
 
 export type HomeStackParamList = {
-  EditWorkout: { selectedWorkout: LoggedWorkout };
-  AddExercise: { selectedWorkout: LoggedWorkout };
+  EditWorkout: { selectedWorkout?: LoggedWorkout };
+  AddExercise: undefined;
   WorkoutSummary: { selectedWorkout: LoggedWorkout };
   CalendarList: { selectedWorkout: LoggedWorkout };
 };
@@ -30,10 +30,10 @@ export default function HomeNavigator() {
         options={{
           header: (headerProps) => {
             const { route } = headerProps;
-            const date = new Date(route.params?.selectedWorkout.date);
-            const dateStr = date.toLocaleDateString();
+            // const date = new Date(route.params?.selectedWorkout.date);
+            // const dateStr = date.toLocaleDateString() ;
 
-            return <TextStackHeader title={dateStr} {...headerProps} />;
+            return <TextStackHeader title={"Test"} {...headerProps} />;
           },
         }}
       />
@@ -41,20 +41,19 @@ export default function HomeNavigator() {
         name="AddExercise"
         component={AddExerciseScreen}
         options={{
-          header: (headerProps) => {
-            const { route } = headerProps;
-            const { onChangeSearchInput } = route.params;
-
-            return (
-              <SearchStackHeader
-                placeholderText="Search exercises"
-                onChangeSearchInput={onChangeSearchInput}
-                iconRight="filter"
-                onPressIconRight={() => console.log("test")}
-                {...headerProps}
-              />
-            );
-          },
+          headerShown: false,
+          // header: (headerProps) => {
+          //   const { route } = headerProps;
+          //   return (
+          //     <SearchStackHeader
+          //       placeholderText="Search exercises"
+          //       onChangeSearchInput={() => {}}
+          //       iconRight="filter"
+          //       onPressIconRight={() => console.log("test")}
+          //       {...headerProps}
+          //     />
+          //   );
+          // },
         }}
       />
       <Stack.Screen

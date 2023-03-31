@@ -4,8 +4,7 @@ import { Text } from "react-native-ui-lib";
 import { Background } from "../../components/Themed";
 import { Exercise } from "../../models/Exercise";
 import { useState, useEffect } from "react";
-import { getExercisesByCriteria } from "../../services/ExerciseService";
-import { ListRenderItemInfo } from "react-native";
+import Storage from "../../services/ExerciseService";
 import { Checkbox } from "react-native-ui-lib";
 import useColors from "../../hooks/useColors";
 import MuscleChip from "../../components/MuscleChip";
@@ -13,15 +12,29 @@ import { TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import Layout from "../../constants/Layout";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import SearchStackHeader from "../../components/Headers/SearchStackHeader";
+import { StackScreenProps } from "@react-navigation/stack";
+import { HomeStackParamList } from "../../navigation/HomeNavigator";
+import { useContext } from "react";
+import {
+  WorkoutContext,
+  WorkoutContextType,
+} from "../../context/WorkoutContext";
+import { LoggedExercise, LoggedSet, LoggedWorkout } from "../../models/Log";
+import {
+  SettingsContext,
+  SettingsContextType,
+} from "../../context/SettingsContext";
 
 type ExerciseRowProps = {
+  disabled: boolean;
   selected: boolean;
   exercise: Exercise;
   onPress: (exercise: Exercise) => void;
 };
 
 const ExerciseRow = (props: ExerciseRowProps) => {
-  const { selected, exercise, onPress } = props;
+  const { disabled, selected, exercise, onPress } = props;
   const COLORS = useColors();
 
   const handleOnPress = () => {
@@ -29,60 +42,70 @@ const ExerciseRow = (props: ExerciseRowProps) => {
   };
 
   return (
-    <TouchableWithoutFeedback
-      // style={{ marginVertical: 5 }}
-      onPress={handleOnPress}
-    >
+    <TouchableWithoutFeedback onPress={disabled ? () => {} : handleOnPress}>
       <View
         style={{
-          backgroundColor: COLORS.container,
+          backgroundColor:
+            selected || disabled ? COLORS.foreground : COLORS.container,
           height: 80,
           borderRadius: 10,
-          paddingHorizontal: 20,
-          // paddingVertical: 5,
-          // width: "90%",
+          paddingHorizontal: 10,
           marginTop: 10,
           width: 0.95 * Layout.window.width,
           flexDirection: "row",
-          justifyContent: "space-between",
           alignItems: "center",
-          borderWidth: 2,
-          borderColor: selected ? COLORS.active : COLORS.container,
         }}
       >
+        <Checkbox
+          size={25}
+          value={selected || disabled}
+          color={disabled ? COLORS.textTertiary : COLORS.active}
+          iconColor={disabled ? COLORS.background : COLORS.text}
+          onValueChange={disabled ? () => {} : handleOnPress}
+        />
         <View
           style={{
-            justifyContent: "space-between",
+            flex: 1,
+            marginLeft: 15,
           }}
         >
-          <Text text70BO marginB-3 color={COLORS.text}>
-            {exercise.name}
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <MuscleChip muscleName={exercise.primaryMuscle} isPrimary />
-            <Text text70 marginL-5 color={COLORS.text}>
-              {exercise.measurements.join(" • ")}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // flex: 1,
+            }}
+          >
+            <Text text80BO marginB-3 color={COLORS.text}>
+              {exercise.name}
             </Text>
+            <MuscleChip muscleName={exercise.primaryMuscle} isPrimary />
           </View>
+          <Text text80 color={COLORS.text}>
+            {exercise.measurements.join(" • ")}
+          </Text>
         </View>
-        <Checkbox
-          size={30}
-          value={selected}
-          color={COLORS.active}
-          onValueChange={handleOnPress}
-        />
       </View>
     </TouchableWithoutFeedback>
   );
 };
 
-export default function AddExerciseScreen() {
+export default function AddExerciseScreen(
+  props: StackScreenProps<HomeStackParamList, "AddExercise">
+) {
+  const { workout, updateWorkout, createWorkout } = useContext(
+    WorkoutContext
+  ) as WorkoutContextType;
+
+  const { settings } = useContext(SettingsContext) as SettingsContextType;
+
   const [exercises, setExercises] = useState([] as Exercise[]);
   const [selectedExercises, setSelectedExercises] = useState([] as Exercise[]);
+
   const COLORS = useColors();
 
   const updateExercises = async () => {
-    const newExercises = await getExercisesByCriteria();
+    const newExercises = await Storage.getExercisesByCriteria();
     setExercises(newExercises);
   };
 
@@ -94,11 +117,58 @@ export default function AddExerciseScreen() {
         selectedExercises.filter((e) => e.id !== exercise.id)
       );
     }
-    // console.log(selectedExercises);
+  };
+
+  const generateExercises = (exercises: Exercise[]) => {
+    return exercises.map((exercise: Exercise) => {
+      let defaultSet: LoggedSet = {};
+
+      for (let measurement of exercise.measurements) {
+        defaultSet[measurement] = settings.defaultLoggedSet[measurement];
+      }
+      return {
+        exercise,
+        sets: [defaultSet],
+      };
+    });
+  };
+
+  const generateNewWorkout = () => {
+    const today = new Date().toLocaleDateString("en-CA");
+    const newWorkout = {
+      id: 0,
+      date: today,
+      exercises: generateExercises(selectedExercises),
+    };
+
+    Storage.getNewId()
+      .then((id) => {
+        newWorkout.id = id;
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+
+    return newWorkout;
   };
 
   const handleOnAddExercise = () => {
-    console.log("Added exercises");
+    console.log(workout);
+    if (workout !== null) {
+      const newLoggedExercises: LoggedExercise[] =
+        generateExercises(selectedExercises);
+      const newWorkout = {
+        ...workout,
+        exercises: workout.exercises.concat(newLoggedExercises),
+      };
+      updateWorkout(newWorkout);
+    } else {
+      const newWorkout = generateNewWorkout();
+      createWorkout(newWorkout);
+    }
+
+    // props.navigation.navigate("EditWorkout");
+    props.navigation.goBack();
   };
 
   useEffect(() => {
@@ -106,61 +176,69 @@ export default function AddExerciseScreen() {
   });
 
   return (
-    <Background flex useSafeArea>
-      <FlatList
-        contentContainerStyle={{ alignItems: "center" }}
-        data={exercises}
-        renderItem={(data) => (
-          <ExerciseRow
-            selected={selectedExercises.includes(data.item)}
-            exercise={data.item}
-            onPress={handleOnPressExercise}
-          />
-        )}
+    <>
+      <SearchStackHeader
+        placeholderText="Search exercises"
+        onChangeSearchInput={() => {}}
+        iconRight="filter"
+        onPressIconRight={() => console.log("test")}
+        navigation={props.navigation}
       />
-      {/* <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          height: 120,
-          backgroundColor: "#FFF",
-          flexDirection: "row",
-          justifyContent: "center",
-          paddingTop: 20,
-        }}
-      > */}
-      <LinearGradient
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          height: 200,
-          flexDirection: "row",
-          justifyContent: "center",
-          paddingTop: 80,
-        }}
-        locations={[0, 0.8]}
-        colors={["transparent", COLORS.background]}
-      >
-        <TouchableOpacity onPress={handleOnAddExercise}>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 15,
-              backgroundColor: COLORS.active,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 10,
-            }}
+      <Background flex useSafeArea>
+        <FlatList
+          contentContainerStyle={{ alignItems: "center", paddingBottom: 150 }}
+          data={exercises}
+          renderItem={(data) => {
+            const exercises =
+              workout?.exercises.map(
+                (loggedExercise) => loggedExercise.exercise
+              ) ?? [];
+
+            return (
+              <ExerciseRow
+                selected={selectedExercises.includes(data.item)}
+                disabled={exercises.includes(data.item)}
+                exercise={data.item}
+                onPress={handleOnPressExercise}
+              />
+            );
+          }}
+        />
+        <LinearGradient
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            height: 200,
+            flexDirection: "row",
+            justifyContent: "center",
+            paddingTop: 80,
+          }}
+          locations={[0, 0.8]}
+          colors={["transparent", COLORS.background]}
+        >
+          <TouchableOpacity
+            onPress={handleOnAddExercise}
+            style={{ display: "flex" }}
           >
-            <Text text60BO marginR-5 color={COLORS.text}>
-              ({selectedExercises.length}) Add Exercises
-            </Text>
-            <FontAwesome5 name="plus" color={COLORS.text} size={16} />
-          </View>
-        </TouchableOpacity>
-      </LinearGradient>
-    </Background>
+            <View
+              style={{
+                flexDirection: "row",
+                padding: 10,
+                backgroundColor: COLORS.active,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 10,
+              }}
+            >
+              <FontAwesome5 name="plus" color={COLORS.text} size={16} />
+              <Text text70BO marginL-5 color={COLORS.text}>
+                Add Exercises ({selectedExercises.length})
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </LinearGradient>
+      </Background>
+    </>
   );
 }

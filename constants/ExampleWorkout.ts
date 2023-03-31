@@ -116,13 +116,13 @@ const exampleExercises2: LoggedExercise[] = [
 const exampleWorkout: LoggedWorkout = {
   id: 1,
   exercises: exampleExercises,
-  date: "2023-03-21",
+  date: "2023-03-30",
 };
 
 export const exampleWorkout2: LoggedWorkout = {
   id: 2,
   exercises: exampleExercises2,
-  date: "2023-03-22",
+  date: "2023-04-02",
 };
 
 export default exampleWorkout;

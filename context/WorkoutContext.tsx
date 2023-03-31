@@ -1,55 +1,50 @@
 import * as React from "react";
 import { LoggedExercise, LoggedWorkout } from "../models/Log";
-import { getWorkoutByDate } from "../services/ExerciseService";
+import Storage from "../services/ExerciseService";
 
 export type WorkoutContextType = {
-  workout: LoggedWorkout;
-  setNewWorkout: (newWorkout: LoggedWorkout) => void;
-  addExercise: (loggedExercise: LoggedExercise) => void;
-  removeExercise: (loggedExercise: LoggedExercise) => void;
+  workout: LoggedWorkout | null;
+  switchWorkout: (newWorkout: LoggedWorkout | null) => void;
+  updateWorkout: (newWorkout: LoggedWorkout) => void;
+  createWorkout: (newWorkout: LoggedWorkout) => void;
+  deleteWorkout: (deletedWorkout: LoggedWorkout) => void;
 };
 
 export const WorkoutContext = React.createContext<WorkoutContextType | null>(
   null
 );
 
-const WorkoutProvider = ({ children }) => {
-  const [workout, setWorkout] = React.useState<LoggedWorkout>(
-    {} as LoggedWorkout
-  );
+const WorkoutProvider = ({ children }: any) => {
+  const [workout, setWorkout] = React.useState<LoggedWorkout | null>(null);
 
-  const initializeWorkout = async () => {
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString("en-CA");
-    const newWorkout = await getWorkoutByDate(formattedDate);
+  const switchWorkout = (newWorkout: LoggedWorkout | null) => {
     setWorkout(newWorkout);
   };
 
-  React.useEffect(() => {
-    initializeWorkout();
-  }, []);
-
-  const setNewWorkout = (newWorkout: LoggedWorkout) => {
-    console.log(newWorkout.id);
+  const updateWorkout = (newWorkout: LoggedWorkout) => {
     setWorkout(newWorkout);
+    Storage.updateWorkout(newWorkout);
   };
 
-  const addExercise = (loggedExercise: LoggedExercise) => {
-    const oldExercises = workout.exercises;
-    setWorkout({ ...workout, exercises: [...oldExercises, loggedExercise] });
+  const createWorkout = (newWorkout: LoggedWorkout) => {
+    setWorkout(newWorkout);
+    Storage.createWorkout(newWorkout);
   };
 
-  const removeExercise = (loggedExercise: LoggedExercise) => {
-    const oldExercises = workout.exercises;
-    const newExercises = oldExercises.filter(
-      (e) => e.exercise.id !== loggedExercise.exercise.id
-    );
-    setWorkout({ ...workout, exercises: newExercises });
+  const deleteWorkout = (deletedWorkout: LoggedWorkout) => {
+    setWorkout(null);
+    Storage.deleteWorkout(deletedWorkout.id);
   };
 
   return (
     <WorkoutContext.Provider
-      value={{ workout, setNewWorkout, addExercise, removeExercise }}
+      value={{
+        workout,
+        switchWorkout,
+        updateWorkout,
+        createWorkout,
+        deleteWorkout,
+      }}
     >
       {children}
     </WorkoutContext.Provider>

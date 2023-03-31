@@ -88,6 +88,12 @@ export default function HomeScreen(props: HomeScreenNavigationProps) {
     });
   };
 
+  const handleCreateWorkout = () => {
+    navigation.navigate("HomeNavigator", {
+      screen: "EditWorkout",
+    });
+  };
+
   // const handleOnChangeWorkout = (workout: LoggedWorkout) => {
   //   setSelectedWorkout(workout);
   // };
@@ -104,6 +110,7 @@ export default function HomeScreen(props: HomeScreenNavigationProps) {
         handleOnPressEdit={handleOnPressEdit}
         handleOnPressSummary={handleOnPressSummary}
         handleOnPressCalendar={handleOnPressCalendar}
+        handleCreateWorkout={handleCreateWorkout}
       />
       {/* </View> */}
       {/* </SafeAreaView> */}

@@ -41,6 +41,7 @@ export default function MuscleChip(props: MuscleChipProps) {
         color={color}
         backgroundColor={COLORS.container}
         outlined={!isPrimary}
+        size="small"
       />
     </View>
   );

@@ -9,13 +9,15 @@ import { useEffect, useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import IconButton from "../IconButton";
 import { LoggedWorkout } from "../../models/Log";
-import { StackHeaderProps } from "@react-navigation/stack";
+import { StackHeaderProps, StackNavigationProp } from "@react-navigation/stack";
+import { ParamListBase } from "@react-navigation/native";
 
-type TextStackHeaderProps = StackHeaderProps & {
+type TextStackHeaderProps = Partial<StackHeaderProps> & {
   placeholderText: string;
   onChangeSearchInput: (newInput: string) => void;
   iconRight?: string;
   onPressIconRight?: () => void;
+  navigation: StackNavigationProp<ParamListBase>;
 };
 
 export default function SearchStackHeader(props: TextStackHeaderProps) {

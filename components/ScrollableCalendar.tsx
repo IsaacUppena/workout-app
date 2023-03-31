@@ -1,6 +1,10 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import { View, ViewStyle } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import useColors from "../hooks/useColors";
 import CalendarStrip from "react-native-calendar-strip";
 import { Text } from "react-native-ui-lib";
@@ -9,7 +13,7 @@ import exampleWorkout from "../constants/ExampleWorkout";
 import MuscleChip from "./MuscleChip";
 import Layout from "../constants/Layout";
 import { useEffect, useState, useContext } from "react";
-import { getWorkoutByDate } from "../services/ExerciseService";
+import Storage from "../services/ExerciseService";
 import { Moment } from "moment";
 import LoggedExerciseRow from "./LoggedExerciseRow";
 import { WorkoutContext, WorkoutContextType } from "../context/WorkoutContext";
@@ -19,16 +23,22 @@ type SortableCalendarProps = {
   handleOnPressEdit: () => void;
   handleOnPressSummary: () => void;
   handleOnPressCalendar: () => void;
+  handleCreateWorkout: () => void;
   // handleOnChangeWorkout: (workout: LoggedWorkout) => void;
 };
 
 export default function SortableCalendar(props: SortableCalendarProps) {
-  const { workout, setNewWorkout } = useContext(
+  const { workout, switchWorkout } = useContext(
     WorkoutContext
   ) as WorkoutContextType;
   const [date, setDate] = useState(new Date());
-  const [selectedWorkout, setSelectedWorkout] = useState(workout);
+  const [selectedWorkout, setSelectedWorkout] = useState<LoggedWorkout | null>(
+    null
+  );
   const COLORS = useColors();
+
+  // console.log(workout);
+  // console.log(selectedWorkout);
 
   const {
     // selectedWorkout,
@@ -36,20 +46,19 @@ export default function SortableCalendar(props: SortableCalendarProps) {
     handleOnPressSummary,
     // handleOnChangeWorkout,
     handleOnPressCalendar,
+    handleCreateWorkout,
   } = props;
 
-  const updateWorkout = async () => {
+  const switchSelectedWorkout = async () => {
     const formattedDate = date.toLocaleDateString("en-CA");
-    const newWorkout = await getWorkoutByDate(formattedDate);
+    const newWorkout = await Storage.getWorkoutByDate(formattedDate);
 
-    console.log(newWorkout.id);
     setSelectedWorkout(newWorkout);
-    setNewWorkout(newWorkout);
-    // handleOnChangeWorkout(newWorkout);
+    switchWorkout(newWorkout);
   };
 
   useEffect(() => {
-    updateWorkout();
+    switchSelectedWorkout();
   }, [date]);
 
   const handleDateChange = (newDate: Moment) => {
@@ -62,8 +71,6 @@ export default function SortableCalendar(props: SortableCalendarProps) {
   }) => {
     handleOnPressCalendar();
   };
-
-  const exampleExercises = exampleWorkout.exercises;
 
   const buttonStyles: ViewStyle = {
     backgroundColor: COLORS.active,
@@ -132,60 +139,76 @@ export default function SortableCalendar(props: SortableCalendarProps) {
           // backgroundColor: COLORS.foreground,
         }}
       >
-        {selectedWorkout.exercises ? (
-          <ScrollView>
-            {selectedWorkout.exercises.map((exercise, index) => (
-              <LoggedExerciseRow key={index} exercise={exercise} />
-            ))}
-          </ScrollView>
+        {selectedWorkout !== null ? (
+          <>
+            <ScrollView>
+              {selectedWorkout.exercises.map((exercise, index) => (
+                <LoggedExerciseRow key={index} exercise={exercise} />
+              ))}
+            </ScrollView>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <TouchableOpacity
+                style={{ marginTop: 10 }}
+                onPress={handleOnPressEdit}
+              >
+                <View style={buttonStyles}>
+                  <Text text70BO marginR-8 color={COLORS.text}>
+                    Edit
+                  </Text>
+                  <FontAwesome5 name="edit" color={COLORS.text} size={15} />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ marginTop: 10 }}
+                onPress={handleOnPressSummary}
+              >
+                <View style={buttonStyles}>
+                  <Text text70BO marginR-8 color={COLORS.text}>
+                    Summary
+                  </Text>
+                  <FontAwesome5
+                    name="info-circle"
+                    color={COLORS.text}
+                    size={15}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </>
         ) : (
-          <View
-            style={{
-              height: 250,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: COLORS.foreground,
-              padding: 10,
-            }}
+          <TouchableWithoutFeedback
+            onPress={handleCreateWorkout}
+            style={{ height: "100%" }}
           >
-            <Text text50BO color={COLORS.textSecondary}>
-              No Exercises
-            </Text>
-            <Text text90 color={COLORS.textTertiary}>
-              You haven't added any exercises to this day
-            </Text>
-          </View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: COLORS.container,
+                borderRadius: 20,
+              }}
+            >
+              <Text text50BO marginB-20 color={COLORS.textSecondary}>
+                Log a New Workout
+              </Text>
+              <FontAwesome5
+                name="plus"
+                color={COLORS.textSecondary}
+                size={80}
+              />
+              {/* <Text text90 color={COLORS.textTertiary}>
+                  You didn't workout on this day
+                </Text> */}
+            </View>
+          </TouchableWithoutFeedback>
         )}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity
-            style={{ marginTop: 10 }}
-            onPress={handleOnPressEdit}
-          >
-            <View style={buttonStyles}>
-              <Text text70BO marginR-8 color={COLORS.text}>
-                Edit
-              </Text>
-              <FontAwesome5 name="edit" color={COLORS.text} size={15} />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ marginTop: 10 }}
-            onPress={handleOnPressSummary}
-          >
-            <View style={buttonStyles}>
-              <Text text70BO marginR-8 color={COLORS.text}>
-                Summary
-              </Text>
-              <FontAwesome5 name="info-circle" color={COLORS.text} size={15} />
-            </View>
-          </TouchableOpacity>
-        </View>
       </View>
     </View>
   );

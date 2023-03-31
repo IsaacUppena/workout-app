@@ -28,16 +28,16 @@ export default function Chip(props: ChipProps) {
   const chipStyles: ViewStyle = {
     backgroundColor: outlined ? backgroundColor : color,
     borderColor: outlined ? color : backgroundColor,
-    borderRadius: 10,
+    borderRadius: size === "large" ? 10 : size === "medium" ? 8 : 5,
     borderWidth: outlined ? 2 : 0,
-    height: size === "large" ? 36 : size === "medium" ? 30 : 26,
+    height: size === "large" ? 32 : size === "medium" ? 26 : 20,
     alignItems: "center",
     paddingHorizontal: 5,
     flexDirection: "row",
   };
 
   const textStyle: TextStyle = {
-    fontSize: size === "large" ? 18 : size === "medium" ? 14 : 12,
+    fontSize: size === "large" ? 14 : size === "medium" ? 12 : 10,
     fontWeight: "bold",
   };
 

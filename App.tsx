@@ -7,6 +7,7 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import "react-native-gesture-handler";
 import WorkoutProvider from "./context/WorkoutContext";
+import SettingsProvider from "./context/SettingsContext";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -18,9 +19,11 @@ export default function App() {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <WorkoutProvider>
-            <Navigation colorScheme={colorScheme} />
-          </WorkoutProvider>
+          <SettingsProvider>
+            <WorkoutProvider>
+              <Navigation colorScheme={colorScheme} />
+            </WorkoutProvider>
+          </SettingsProvider>
           <StatusBar />
         </SafeAreaProvider>
       </GestureHandlerRootView>

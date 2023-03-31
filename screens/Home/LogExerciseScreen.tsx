@@ -24,6 +24,7 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import IconButton from "../../components/IconButton";
 import { LoggedExercise, LoggedWorkout } from "../../models/Log";
@@ -44,29 +45,45 @@ import {
 export default function LogExerciseScreen(
   props: StackScreenProps<HomeStackParamList, "EditWorkout">
 ) {
-  const [searchInput, setSearchInput] = useState("");
-  const { workout } = useContext(WorkoutContext) as WorkoutContextType;
-  const selectedWorkout = workout;
+  const { workout, updateWorkout, createWorkout } = useContext(
+    WorkoutContext
+  ) as WorkoutContextType;
+  const [selectedWorkout, setSelectedWorkout] = useState(workout);
 
   const { route, navigation } = props;
 
-  // const { selectedWorkout } = route.params;
-  // const [workout, setWorkout] = useState(selectedWorkout);
-  const selectedExercises = selectedWorkout.exercises;
+  const selectedExercises = selectedWorkout?.exercises;
 
-  // const day = props.route.params;
   const COLORS = useColors();
-  const [showDialog, setShowDialog] = useState(false);
 
   const containerStyles: ViewStyle = {
     flex: 1,
     width: "100%",
     alignItems: "center",
     flexDirection: "column",
-    // justifyContent: "space-between",
   };
 
-  // console.log(workout);
+  useEffect(() => {
+    if (selectedWorkout) {
+      updateWorkout(selectedWorkout);
+    }
+  }, [selectedWorkout]);
+
+  useEffect(() => {
+    if (workout) {
+      setSelectedWorkout(workout);
+    }
+  }, [workout]);
+
+  // At what point do we actually create a new workout in the DB?
+  // What is the minimal requirements for LoggedWorkout type? A date and empty logged Exercise array
+  // We don't want to create a workout with no exercises, so we need at least one exercise
+  // What are the minimal requirements for a LoggedExercise? An exercise and empty LoggedSet array
+  // Therefore we need an exercise to be selected, and we want at least on Logged Set
+  // Logged set is auto populated by default based on the last set performed/default setting
+  // There will never be an exercise created that has zero logged sets, but what if the user tries to exit without entering a value? go back to previous default (exists in context/db)
+  // When do we consider an workout created? (update context/DB) - When it has at least one exercise, logged set will be auto populated
+  // When do we consider an workout updated? (update context/DB) - Whenever any value in any logged set, or any value in the logged exercise, is updated to a truthy value
 
   // useEffect(
   //   () =>
@@ -100,161 +117,87 @@ export default function LogExerciseScreen(
   //   [navigation]
   // );
 
-  const onChangeText = (newText: string) => {
-    setSearchInput(newText);
-  };
-
   const handleAddExercise = () => {
     console.log("created exercise");
-    // props.navigation.navigate("AddExercise");
-    props.navigation.navigate({
-      name: "AddExercise",
-      params: { selectedWorkout },
-    });
-    // setShowDialog(true);
+    props.navigation.navigate("AddExercise");
   };
 
-  // const handleDayPress = (day: Date) => {
-  //   console.log("selected day", day);
-  //   props.navigation.navigate({ name: "LogExercise", params: { }})
-  //   props.navigation.navigate("LogExercise", day.toLocaleDateString());
-  // };
-
-  // const onDialogDismissed = useCallback(() => {
-  //   setShowDialog(false);
-  // }, []);
-
-  const onDialogDismissed = () => {
-    setShowDialog(false);
-  };
-
-  // Replace FAB with a bottom gradient and button that says (Add exercise +), this transforms into a modal where exercise can be selected
+  const handleExerciseChange = (newExercise: LoggedExercise) => {};
 
   return (
     <Background useSafeArea flex>
-      <View style={containerStyles}>
-        <FlatList
-          contentContainerStyle={{
-            paddingBottom:
-              selectedExercises[selectedExercises.length - 1].sets.length * 5 +
-              90,
-          }}
-          // contentOffset={{ x: 0, y: 200 }}
-          data={selectedExercises}
-          renderItem={({ item, index }) => (
-            <View style={{ marginTop: 10 }}>
-              <ExerciseCard log={item} onPress={() => {}} />
-            </View>
-          )}
-          keyExtractor={(item, index) => `${index}`}
-        />
-      </View>
-      {/* <View
-        style={{
-          position: "absolute",
-          bottom: 30,
-          right: Layout.window.width / 2 - 40,
-          backgroundColor: "#fff",
-        }}
-      > */}
-      <LinearGradient
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          height: 160,
-          flexDirection: "row",
-          justifyContent: "center",
-          paddingTop: 40,
-        }}
-        locations={[0, 0.8]}
-        colors={["transparent", COLORS.background]}
-      >
-        <Pressable onPress={handleAddExercise}>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 10,
-              backgroundColor: COLORS.active,
-              width: 150,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 10,
-            }}
-          >
-            <Text text70BO marginR-5 color={COLORS.text}>
-              Add Exercise
-            </Text>
-            <FontAwesome5 name="plus" color={COLORS.text} />
+      {selectedExercises ? (
+        <>
+          <View style={containerStyles}>
+            <FlatList
+              contentContainerStyle={{
+                paddingBottom:
+                  selectedExercises[selectedExercises.length - 1].sets.length *
+                    5 +
+                  90,
+              }}
+              // contentOffset={{ x: 0, y: 200 }}
+              data={selectedExercises}
+              renderItem={({ item, index }) => (
+                <View style={{ marginTop: 10 }}>
+                  <ExerciseCard log={item} onChange={handleExerciseChange} />
+                </View>
+              )}
+              keyExtractor={(item, index) => `${index}`}
+            />
           </View>
-        </Pressable>
-      </LinearGradient>
-      {/* </LinearGradient> */}
-      <Incubator.Dialog
-        width={"90%"}
-        visible={showDialog}
-        onDismiss={onDialogDismissed}
-        headerProps={{
-          title: "Add Exercise",
-          showKnob: false,
-          showDivider: false,
-        }}
-        containerStyle={{ backgroundColor: COLORS.background, height: "90%" }}
-        center
-        // direction="up"
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 10,
-            marginTop: 10,
-          }}
+          <LinearGradient
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              height: 160,
+              flexDirection: "row",
+              justifyContent: "center",
+              paddingTop: 40,
+            }}
+            locations={[0, 0.8]}
+            colors={["transparent", COLORS.background]}
+          >
+            <Pressable onPress={handleAddExercise}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 10,
+                  backgroundColor: COLORS.active,
+                  width: 150,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10,
+                }}
+              >
+                <Text text70BO marginR-5 color={COLORS.text}>
+                  Add Exercise
+                </Text>
+                <FontAwesome5 name="plus" color={COLORS.text} />
+              </View>
+            </Pressable>
+          </LinearGradient>
+        </>
+      ) : (
+        <TouchableWithoutFeedback
+          style={{ width: "100%", height: "100%" }}
+          onPress={handleAddExercise}
         >
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
+              flex: 1,
+              justifyContent: "center",
               alignItems: "center",
-              backgroundColor: COLORS.container,
-              borderRadius: 10,
-              padding: 10,
             }}
           >
-            <FontAwesome5
-              name="search"
-              color={COLORS.textTertiary}
-              style={{ marginRight: 8 }}
-              size={16}
-            />
-            <TextInput
-              onChangeText={onChangeText}
-              value={searchInput}
-              placeholder="Search exercises"
-              style={{
-                width: "80%",
-                color: COLORS.textSecondary,
-                fontSize: 16,
-              }}
-            />
+            <Text text70BO marginR-5 color={COLORS.text}>
+              No Exercises Yet
+            </Text>
+            <FontAwesome5 name="plus" color={COLORS.text} />
           </View>
-          <TouchableHighlight>
-            <FontAwesome5 name="filter" color={COLORS.textTertiary} size={20} />
-          </TouchableHighlight>
-        </View>
-        {/* <WheelPicker initialValue={5} label={"Days"} items={dayItems} /> */}
-      </Incubator.Dialog>
-
-      {/* </View> */}
-      {/* <IconButton
-          name="plus"
-          color={COLORS.text}
-          backgroundColor={COLORS.active}
-          size={80}
-          onPress={handleCreateExercise}
-        />
-      </View> */}
+        </TouchableWithoutFeedback>
+      )}
     </Background>
   );
 }
