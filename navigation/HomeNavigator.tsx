@@ -60,15 +60,17 @@ export default function HomeNavigator() {
         name="WorkoutSummary"
         component={WorkoutSummaryScreen}
         options={{
-          header: (headerProps) => {
-            const { route } = headerProps;
-            const date = new Date(route.params?.selectedWorkout.date);
-            const dateStr = date.toLocaleDateString();
+          headerShown: false,
 
-            return (
-              <TextStackHeader title={`${dateStr} Summary`} {...headerProps} />
-            );
-          },
+          // header: (headerProps) => {
+          //   const { route } = headerProps;
+          //   const date = new Date(route.params?.selectedWorkout.date);
+          //   const dateStr = date.toLocaleDateString();
+
+          //   return (
+          //     <TextStackHeader title={`${dateStr} Summary`} {...headerProps} />
+          //   );
+          // },
         }}
       />
       <Stack.Screen

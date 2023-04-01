@@ -1,4 +1,4 @@
-import { View, ViewStyle } from "react-native";
+import { LayoutAnimation, View, ViewStyle } from "react-native";
 import {
   FlatList,
   TouchableOpacity,
@@ -59,7 +59,24 @@ export default function ExerciseCard(props: ExerciseCardProps) {
   const { primaryMuscle, secondaryMuscles } = log.exercise;
 
   const handleAddSet = () => {
-    console.log("Added Set");
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const lastSet = log.sets[log.sets.length - 1];
+    const updatedExercise: LoggedExercise = {
+      exercise: log.exercise,
+      sets: log.sets.concat(lastSet),
+    };
+    onChange(updatedExercise);
+  };
+
+  const handleRemoveSet = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (log.sets.length > 1) {
+      const updatedExercise: LoggedExercise = {
+        exercise: log.exercise,
+        sets: log.sets.slice(0, -1),
+      };
+      onChange(updatedExercise);
+    }
   };
 
   const test = (
@@ -75,6 +92,7 @@ export default function ExerciseCard(props: ExerciseCardProps) {
       </Text>
     </View>
   );
+
   return (
     <View style={cardBackgroundStyles}>
       <View style={cardHeaderStyles}>
@@ -94,26 +112,99 @@ export default function ExerciseCard(props: ExerciseCardProps) {
           indexColHeader="Set"
         />
       </View>
-      <TouchableWithoutFeedback onPress={handleAddSet}>
+      <View
+        style={{
+          width: "80%",
+          flexDirection: "row",
+          marginVertical: 10,
+          justifyContent: "space-around",
+          marginHorizontal: "10%",
+        }}
+      >
+        {/* <TouchableWithoutFeedback onPress={handleRemoveSet}> */}
         <View
           style={{
-            backgroundColor: COLORS.foreground,
-            width: "80%",
-            borderRadius: 10,
-            marginHorizontal: "10%",
-            marginVertical: 10,
+            // backgroundColor: "#FF5555",
+            width: 150,
+            borderRadius: 5,
             justifyContent: "center",
             flexDirection: "row",
             alignItems: "center",
-            padding: 2,
+            padding: 3,
           }}
         >
-          <FontAwesome5 name="plus" color={COLORS.text} size={10} />
-          <Text text80BO marginL-3 color={COLORS.text}>
-            Add Set
+          <FontAwesome5
+            name="minus"
+            color={COLORS.text}
+            size={20}
+            onPress={handleRemoveSet}
+          />
+          <Text text70BO marginH-20 color={COLORS.text}>
+            Set
           </Text>
+          <FontAwesome5
+            name="plus"
+            color={COLORS.text}
+            size={20}
+            onPress={handleAddSet}
+          />
         </View>
-      </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
+        {/* <TouchableWithoutFeedback onPress={handleAddSet}> */}
+        {/* <View
+          style={{
+            backgroundColor: "rgba(100, 256, 100, 0.8)",
+            width: 150,
+            borderRadius: 5,
+            justifyContent: "center",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 3,
+          }}
+        > */}
+        {/* <Text text80BO marginR-3 color={COLORS.background}>
+              Add
+            </Text> */}
+        {/* </View> */}
+        {/* </TouchableWithoutFeedback> */}
+        {/* <TouchableWithoutFeedback onPress={handleRemoveSet}>
+          <View
+            style={{
+              backgroundColor: "#FF5555",
+              // width: "80%",
+              width: 150,
+              borderRadius: 5,
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 3,
+            }}
+          >
+            <Text text80BO marginR-3 color={COLORS.background}>
+              Remove Set
+            </Text>
+            <FontAwesome5 name="minus" color={COLORS.background} size={10} />
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={handleAddSet}>
+          <View
+            style={{
+              backgroundColor: "rgba(100, 256, 100, 0.8)",
+              width: 150,
+              borderRadius: 5,
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 3,
+            }}
+          >
+            <Text text80BO marginR-3 color={COLORS.background}>
+              Add Set
+            </Text>
+            <FontAwesome5 name="plus" color={COLORS.background} size={10} />
+          </View>
+        </TouchableWithoutFeedback> */}
+      </View>
     </View>
   );
 }

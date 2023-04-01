@@ -61,6 +61,10 @@ export default function SortableCalendar(props: SortableCalendarProps) {
     switchSelectedWorkout();
   }, [date]);
 
+  useEffect(() => {
+    setSelectedWorkout(workout);
+  }, [workout]);
+
   const handleDateChange = (newDate: Moment) => {
     setDate(new Date(newDate.valueOf()));
   };
@@ -158,10 +162,15 @@ export default function SortableCalendar(props: SortableCalendarProps) {
                 onPress={handleOnPressEdit}
               >
                 <View style={buttonStyles}>
-                  <Text text70BO marginR-8 color={COLORS.text}>
+                  <Text text70BO marginR-5 color={COLORS.text}>
                     Edit
                   </Text>
-                  <FontAwesome5 name="edit" color={COLORS.text} size={15} />
+                  <FontAwesome5
+                    name="edit"
+                    color={COLORS.text}
+                    size={15}
+                    solid
+                  />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -169,7 +178,7 @@ export default function SortableCalendar(props: SortableCalendarProps) {
                 onPress={handleOnPressSummary}
               >
                 <View style={buttonStyles}>
-                  <Text text70BO marginR-8 color={COLORS.text}>
+                  <Text text70BO marginR-5 color={COLORS.text}>
                     Summary
                   </Text>
                   <FontAwesome5

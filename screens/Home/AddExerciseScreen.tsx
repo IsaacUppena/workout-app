@@ -98,7 +98,6 @@ export default function AddExerciseScreen(
   ) as WorkoutContextType;
 
   const { settings } = useContext(SettingsContext) as SettingsContextType;
-
   const [exercises, setExercises] = useState([] as Exercise[]);
   const [selectedExercises, setSelectedExercises] = useState([] as Exercise[]);
 
@@ -153,7 +152,6 @@ export default function AddExerciseScreen(
   };
 
   const handleOnAddExercise = () => {
-    console.log(workout);
     if (workout !== null) {
       const newLoggedExercises: LoggedExercise[] =
         generateExercises(selectedExercises);
@@ -166,8 +164,6 @@ export default function AddExerciseScreen(
       const newWorkout = generateNewWorkout();
       createWorkout(newWorkout);
     }
-
-    // props.navigation.navigate("EditWorkout");
     props.navigation.goBack();
   };
 
@@ -209,12 +205,12 @@ export default function AddExerciseScreen(
             position: "absolute",
             bottom: 0,
             width: "100%",
-            height: 200,
+            height: 120,
             flexDirection: "row",
             justifyContent: "center",
-            paddingTop: 80,
+            paddingTop: 10,
           }}
-          locations={[0, 0.8]}
+          locations={[0, 0.7]}
           colors={["transparent", COLORS.background]}
         >
           <TouchableOpacity

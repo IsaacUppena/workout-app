@@ -118,11 +118,25 @@ export default function LogExerciseScreen(
   // );
 
   const handleAddExercise = () => {
-    console.log("created exercise");
     props.navigation.navigate("AddExercise");
   };
 
-  const handleExerciseChange = (newExercise: LoggedExercise) => {};
+  const handleExerciseChange = (newExercise: LoggedExercise) => {
+    if (selectedWorkout) {
+      const oldExercises = selectedWorkout.exercises;
+      const newExercises = oldExercises.map((oldExercise) =>
+        oldExercise.exercise.id === newExercise.exercise.id
+          ? newExercise
+          : oldExercise
+      );
+      setSelectedWorkout({
+        ...selectedWorkout,
+        exercises: newExercises,
+      });
+    } else {
+      throw new Error("Non-existant exercise triggered");
+    }
+  };
 
   return (
     <Background useSafeArea flex>
@@ -151,12 +165,12 @@ export default function LogExerciseScreen(
               position: "absolute",
               bottom: 0,
               width: "100%",
-              height: 160,
+              height: 120,
               flexDirection: "row",
               justifyContent: "center",
-              paddingTop: 40,
+              paddingTop: 10,
             }}
-            locations={[0, 0.8]}
+            locations={[0, 0.7]}
             colors={["transparent", COLORS.background]}
           >
             <Pressable onPress={handleAddExercise}>
