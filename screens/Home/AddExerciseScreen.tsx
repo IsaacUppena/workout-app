@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { LayoutAnimation, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text } from "react-native-ui-lib";
 import { Background } from "../../components/Themed";
@@ -25,6 +25,7 @@ import {
   SettingsContext,
   SettingsContextType,
 } from "../../context/SettingsContext";
+import ExerciseFilters from "../../components/ExerciseFilters";
 
 type ExerciseRowProps = {
   disabled: boolean;
@@ -100,8 +101,14 @@ export default function AddExerciseScreen(
   const { settings } = useContext(SettingsContext) as SettingsContextType;
   const [exercises, setExercises] = useState([] as Exercise[]);
   const [selectedExercises, setSelectedExercises] = useState([] as Exercise[]);
+  const [expandFilters, setExpandFilters] = useState(false);
 
   const COLORS = useColors();
+
+  const handleExpandFilters = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandFilters(!expandFilters);
+  };
 
   const updateExercises = async () => {
     const newExercises = await Storage.getExercisesByCriteria();
@@ -177,9 +184,19 @@ export default function AddExerciseScreen(
         placeholderText="Search exercises"
         onChangeSearchInput={() => {}}
         iconRight="filter"
-        onPressIconRight={() => console.log("test")}
+        onPressIconRight={handleExpandFilters}
         navigation={props.navigation}
       />
+      <View
+        style={{
+          height: expandFilters ? undefined : 0,
+          backgroundColor: COLORS.container,
+          borderBottomColor: COLORS.background,
+          borderBottomWidth: 2,
+        }}
+      >
+        <ExerciseFilters />
+      </View>
       <Background flex useSafeArea>
         <FlatList
           contentContainerStyle={{ alignItems: "center", paddingBottom: 150 }}

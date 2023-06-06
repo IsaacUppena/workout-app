@@ -53,8 +53,6 @@ export default function SearchStackHeader(props: TextStackHeaderProps) {
   };
 
   const headerContainerStyles: ViewStyle = {
-    borderBottomColor: COLORS.background,
-    borderBottomWidth: 2,
     backgroundColor: COLORS.container,
     height: 100,
     alignItems: "center",

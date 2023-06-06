@@ -182,6 +182,7 @@ export default function ExerciseFilters() {
     }
   };
 
+  // TODO: Fix behavior when muscle gets set to all, can be confusing
   const handleOnPressMuscle = (muscle: string) => {
     setAllMuscles(false);
     let curMuscles = selectedMuscles as string[];
@@ -229,62 +230,60 @@ export default function ExerciseFilters() {
   };
 
   return (
-    <View style={{ alignItems: "center", marginTop: 15 }}>
-      <View
-        style={{
-          backgroundColor: COLORS.container,
-          width: "95%",
-          borderRadius: 10,
-          padding: 20,
-        }}
-      >
-        <Text text60BO color={COLORS.text}>
-          Filters
-        </Text>
-        <ChipListInput
-          title="Muscle Groups"
-          titleColor={COLORS.text}
-          activeColor={COLORS.active}
-          inactiveColor={COLORS.background}
-          textColor={COLORS.text}
-          filters={selectedMuscleGroups}
-          options={muscleGroups.slice()}
-          displayNameMap={muscleGroupNameMap}
-          selectAll={allMuscleGroups}
-          openByDefault
-          containerStyles={filterStyles}
-          handleOnPress={handleOnPressMuscleGroup}
-          handleOnPressAll={handleOnPressAllMuscleGroups}
-        />
-        <ChipListInput
-          title="Muscles"
-          titleColor={COLORS.text}
-          activeColor={COLORS.active}
-          inactiveColor={COLORS.background}
-          textColor={COLORS.text}
-          filters={selectedMuscles}
-          options={availableMuscles}
-          displayNameMap={muscleNameMap}
-          selectAll={allMuscles}
-          containerStyles={filterStyles}
-          handleOnPress={handleOnPressMuscle}
-          handleOnPressAll={handleOnPressAllMuscles}
-        />
-        <ChipListInput
-          title="Resistance Types"
-          titleColor={COLORS.text}
-          activeColor={COLORS.active}
-          inactiveColor={COLORS.background}
-          textColor={COLORS.text}
-          filters={selectedTypes}
-          options={resistanceTypes.slice()}
-          displayNameMap={typeNameMap}
-          selectAll={allTypes}
-          containerStyles={filterStyles}
-          handleOnPress={handleOnPressType}
-          handleOnPressAll={handleOnPressAllTypes}
-        />
-      </View>
+    <View
+      style={{
+        //   backgroundColor: COLORS.container,
+        //   width: "95%",
+        //   borderRadius: 10,
+        padding: 10,
+      }}
+    >
+      <Text text60BO color={COLORS.text}>
+        Filters
+      </Text>
+      <ChipListInput
+        title="Muscle Groups"
+        titleColor={COLORS.text}
+        activeColor={COLORS.active}
+        inactiveColor={COLORS.background}
+        textColor={COLORS.text}
+        filters={selectedMuscleGroups}
+        options={muscleGroups.slice()}
+        displayNameMap={muscleGroupNameMap}
+        selectAll={allMuscleGroups}
+        openByDefault
+        containerStyles={filterStyles}
+        handleOnPress={handleOnPressMuscleGroup}
+        handleOnPressAll={handleOnPressAllMuscleGroups}
+      />
+      <ChipListInput
+        title="Muscles"
+        titleColor={COLORS.text}
+        activeColor={COLORS.active}
+        inactiveColor={COLORS.background}
+        textColor={COLORS.text}
+        filters={selectedMuscles}
+        options={availableMuscles}
+        displayNameMap={muscleNameMap}
+        selectAll={allMuscles}
+        containerStyles={filterStyles}
+        handleOnPress={handleOnPressMuscle}
+        handleOnPressAll={handleOnPressAllMuscles}
+      />
+      <ChipListInput
+        title="Resistance Types"
+        titleColor={COLORS.text}
+        activeColor={COLORS.active}
+        inactiveColor={COLORS.background}
+        textColor={COLORS.text}
+        filters={selectedTypes}
+        options={resistanceTypes.slice()}
+        displayNameMap={typeNameMap}
+        selectAll={allTypes}
+        containerStyles={filterStyles}
+        handleOnPress={handleOnPressType}
+        handleOnPressAll={handleOnPressAllTypes}
+      />
     </View>
   );
 }
